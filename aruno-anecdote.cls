@@ -73,6 +73,11 @@
 
 \definecolor{textbody}{gray}{0.15}
 \definecolor{footnoterule}{gray}{0.5}
+\definecolor{chapternum}{gray}{0.8}
+\definecolor{chaptertitle}{gray}{0.3}
+\definecolor{chapterauthor}{gray}{0.3}
+\definecolor{chapternote}{gray}{0.3}
+\definecolor{section}{gray}{0.3}
 
 % === Load fonts ===
 
@@ -94,8 +99,42 @@
   SmallCapsFeatures= { Ligatures = TeX, Letters = SmallCaps }
 ]{Gentium}
 
-\newfontfamily\headFont{Arno Pro}
-\newfontfamily\footFont{Gentium}
+\newfontfamily\ArnoProFont{Arno Pro}
+\newfontfamily\GentiumFont{Gentium}
+
+% header and footer
+
+\newfontfamily\footFont[Renderer = Basic]{Shaker Pali}
+
+\newcommand{\footSize}
+  {\@setfontsize\footSize{9}{9}}
+
+% chapter
+
+\newfontfamily\chapterNameFont{Arno Pro}
+\newfontfamily\chapterTitleFont{Arno Pro}
+\newfontfamily\chapterNumberFont{Arno Pro}
+\newfontfamily\chapterAuthorFont{Arno Pro}
+\newfontfamily\chapterNoteFont{Arno Pro}
+
+\newcommand{\chapterNameSize}
+  {\@setfontsize\chapterNameSize{22}{24}}
+\newcommand{\chapterNumberSize}
+  {\@setfontsize\chapterNumberSize{22}{24}}
+\newcommand{\chapterTitleSize}
+  {\@setfontsize\chapterTitleSize{13}{16.5}}
+\newcommand{\chapterAuthorSize}
+  {\@setfontsize\chapterAuthorSize{12}{14}}
+\newcommand{\chapterNoteSize}
+  {\@setfontsize\chapterNoteSize{10}{13}}
+
+% section
+
+\newfontfamily\sectionFont{Arno Pro}
+
+\newcommand{\sectionSize}
+  {\@setfontsize\sectionSize{13}{15}}
+
 
 % === Page geometry and layout ===
 
@@ -142,7 +181,7 @@
   \settrims{0pt}{0pt}
   % It won't be exactly 33 lines because of the parskip numbers,
   % but close enough for our purpose.
-  \settypeblocksize{32\baselineskip + \topskip}{*}{0.577}% 1/sqrt(3), Hexagon
+  \settypeblocksize{32\baselineskip + \topskip}{*}{0.577}% 1/1.732 (sqrt(3)), Hexagon
   \setlrmargins{*}{*}{1.125}% major 2nd 15:16, 25.6mm | 22.77mm
   \setulmargins{*}{*}{1.701}% Tall Pentagon, 17.9mm | 30.52mm
   \setlength{\footskip}{3\baselineskip}
@@ -205,6 +244,10 @@
 
 % === soul settings ===
 
+\sodef\soTocChapter{}{.1em}{.5em plus.1em}{.1em plus.1em minus.1em}
+\sodef\soSection{}{.07em}{.4em plus.1em}{.1em plus.1em minus.1em}
+\sodef\soChapter{}{.1em}{.5em plus.1em}{.1em plus.1em minus.1em}
+
 % === New, custom commands and environments ===
 
 % === Renewing package macros ===
@@ -219,14 +262,44 @@
 
 \nouppercaseheads
 
-\makepagestyle{normalpage}
-\makeevenhead{normalpage}{}{}{}
-\makeevenfoot{normalpage}{}{\textit{\rightmark $\cdot$ \thepage}}{}
-\makeoddhead{normalpage}{}{}{}
-\makeoddfoot{normalpage}{}{\textit{\leftmark $\cdot$ \thepage}}{}
+% define page styles with names about "what it does"
+
+\newcommand{\sepline}{%
+  \hspace{6pt}%
+  \raisebox{-0.3\baselineskip}{\rule{0.2pt}{1.2\baselineskip}}%
+  \hspace{6pt}%
+}
+
+\makepagestyle{bottomcorner}
+\makeevenhead{bottomcorner}{}{}{}
+\makeevenfoot{bottomcorner}{%
+  \footFont\footSize%
+  \thepage \sepline \leftmark%
+}{}{}
+\makeoddhead{bottomcorner}{}{}{}
+\makeoddfoot{bottomcorner}{}{}{%
+  \footFont\footSize%
+  \rightmark \sepline \thepage%
+}
+
+\makepagestyle{bottomcenter}
+\makeevenhead{bottomcenter}{}{}{}
+\makeevenfoot{bottomcenter}{}{%
+  \footFont\footSize%
+  \thepage%
+}{}
+\makeoddhead{bottomcenter}{}{}{}
+\makeoddfoot{bottomcenter}{}{%
+  \footFont\footSize%
+  \thepage%
+}{}
+
+% alias the pagestyles into semantic names, "where it is used"
+
+\aliaspagestyle{normalpage}{bottomcorner}
+\aliaspagestyle{chapter}{bottomcenter}
 
 \pagestyle{normalpage}
-
 
 % === TOC settings ===
 
@@ -236,10 +309,94 @@
 
 \setsecnumdepth{chapter}
 
+% define chapter styles with "fantasy" names
+
+\newif\ifchapterauthor
+\chapterauthorfalse
+
+\newcommand*{\chapterAuthor}{}
+\newcommand*{\setChapterAuthor}[1]{%
+  \chapterauthortrue%
+  \renewcommand*\chapterAuthor{#1}%
+}
+
+\newcommand\chapterAuthorFmt[1]{%
+  \chapterAuthorFont\chapterAuthorSize\color{chapterauthor}%
+  #1%
+}
+
+\newif\ifchapternote
+\chapternotefalse
+
+\newcommand\chapterNoteFmt[1]{%
+  \chapterNoteFont\chapterNoteSize\color{chapternote}%
+  \itshape #1%
+}
+
+\newcommand*{\chapterNote}{}
+\newcommand*{\setChapterNote}[1]{%
+  \chapternotetrue%
+  \renewcommand*\chapterNote{#1}%
+}
+
+\makechapterstyle{lowtitle}{
+  \chapterstyle{default}
+  \setlength{\beforechapskip}{30mm}
+  \renewcommand\printchaptername{}
+  \renewcommand\chapternamenum{}
+  \renewcommand\chapnumfont{\chapterNumberFont\chapterNumberSize}
+  \renewcommand\printchapternum{%
+    \chapnumfont\color{chapternum}%
+    \hspace*{17pt}\thechapter%
+  }
+  \setlength{\midchapskip}{2\onelineskip}
+  \renewcommand\afterchapternum{\par\nobreak\vskip \midchapskip}
+  \renewcommand\printchapternonum{}
+  \renewcommand\chaptitlefont{\chapterTitleFont\chapterTitleSize}
+  \renewcommand*\printchaptertitle[1]{%
+    \raggedright\hspace*{17pt}\parbox{\linewidth - 17pt}{%
+      \raggedright\chaptitlefont\color{chaptertitle}%
+      \MakeUppercase{\soChapter{##1}}%
+      \ifchapterauthor%
+        \vskip 0.5\onelineskip%
+        \chapterAuthorFmt{\chapterAuthor}%
+        \chapterauthorfalse%
+      \fi%
+      \ifchapternote%
+        \vskip 0.5\onelineskip%
+        \chapterNoteFmt{\chapterNote}%
+        \chapternotefalse%
+      \fi%
+    }%
+  }
+  \setlength{\afterchapskip}{2.5\onelineskip}
+  \renewcommand\afterchaptertitle{\par\nobreak\vskip \afterchapskip}%
+}
+
+% alias the "fantasy" names into semantic chapter names
+
+\chapterstyle{lowtitle}
+
 % === Section styles ===
+
+\raggedbottomsection
 
 \setbeforesecskip{-3.5ex \@plus -1ex \@minus -.2ex}
 \setaftersecskip{2.3ex \@plus .2ex}
+
+\newcommand\sectionFmt[1]{%
+  \sectionFont\sectionSize\color{section}%
+  \memRTLraggedright%
+  \itshape #1%
+}
+\setsecheadstyle{\sectionFmt}
+
+\setsubsecheadstyle{%
+  \sectionFont\large\itshape\memRTLraggedright%
+}
+\setsubsubsecheadstyle{%
+  \sectionFont\normalsize\itshape\memRTLraggedright%
+}
 
 % === Packages to be loaded LAST ===
 
