@@ -152,7 +152,7 @@
   %
   % 6in x 9in page
   % P = 1.5 (fifth)
-  % T =
+  % T = 1.732 (sqrt(3)), Hexagon
 
   % For 11pt / 16pt font size, Gentium font, 5pt parskip, no parindent.
 
@@ -298,6 +298,7 @@
 
 \aliaspagestyle{normalpage}{bottomcorner}
 \aliaspagestyle{chapter}{bottomcenter}
+
 
 \pagestyle{normalpage}
 
