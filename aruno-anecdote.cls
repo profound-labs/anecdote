@@ -17,8 +17,6 @@
 % Preliminary Declarations
 % ========================
 
-\RequirePackage[british]{babel}
-
 % =======
 % Options
 % =======
@@ -30,6 +28,8 @@
   /ANEC/.cd,
   pagePreset/.default=largepage,
   pagePreset/.store in=\ANEC@pagePreset,
+  babelLanguage/.default=british,
+  babelLanguage/.store in=\ANEC@babelLanguage,
 }
 
 % Pass all unknown options to memoir
@@ -45,6 +45,8 @@
 % ======================
 
 \LoadClass[11pt,twoside]{memoir}
+
+\RequirePackage[\ANEC@babelLanguage]{babel}
 
 \RequirePackage{nag}
 \RequirePackage{xparse}
@@ -229,10 +231,14 @@
 %% WARNING: there will be more underfull lines, and some very streched
 %% lines. Check the log file for underfull warnings.
 
-\lefthyphenmin=3
-\righthyphenmin=3
+% There are reset every time the language is reset.
+%\lefthyphenmin=3
+%\righthyphenmin=3
 
-\hyphenpenalty=600
+% Use this instead:
+\renewcommand\britishhyphenmins{{3}{3}}
+
+\hyphenpenalty=700
 \exhyphenpenalty=50
 \doublehyphendemerits=900
 \brokenpenalty=990
