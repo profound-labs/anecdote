@@ -1,4 +1,4 @@
-% Aruno Opus Class
+% Aruno Anecdote Class
 %
 % (c) Gambhiro Bhikkhu, 2013
 % gambhiro@ratanagiri.org.uk
@@ -11,7 +11,7 @@
 % ==============
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{aruno-opus}[2013/03/19 v0.01 A document class for books with a lighter content.]
+\ProvidesClass{aruno-anecdote}[2013/04/13 v0.2 A document class for books with a lighter content.]
 
 % ========================
 % Preliminary Declarations
@@ -27,17 +27,9 @@
 \RequirePackage{calc}
 
 \pgfkeys{
-  /OPUS/.cd,
+  /ANEC/.cd,
   pagePreset/.default=largepage,
-  pagePreset/.store in=\OPUS@pagePreset,
-  mainFontFamily/.default=TeX Gyre Pagella,
-  mainFontFamily/.store in=\OPUS@mainFontFamily,
-  italicFontFamily/.default=TeX Gyre Pagella Italic,
-  italicFontFamily/.store in=\OPUS@italicFontFamily,
-  boldFontFamily/.default=TeX Gyre Pagella Bold,
-  boldFontFamily/.store in=\OPUS@boldFontFamily,
-  capsFontFamily/.default=TeX Gyre Pagella,
-  capsFontFamily/.store in=\OPUS@capsFontFamily,
+  pagePreset/.store in=\ANEC@pagePreset,
 }
 
 % Pass all unknown options to memoir
@@ -45,7 +37,7 @@
   \PassOptionsToClass{\CurrentOption}{memoir}
 }
 
-\ProcessPgfOptions{/OPUS}
+\ProcessPgfOptions{/ANEC}
 \ProcessOptions\relax
 
 % ======================
@@ -84,23 +76,20 @@
 \RequirePackage{fontspec}
 \defaultfontfeatures{Ligatures={TeX}}
 
-% \setmainfont
-% [ BoldFont = Crimson Semibold,
-%   ItalicFont = TeX Gyre Pagella Italic,
-%   ItalicFeatures = { Ligatures = TeX, Scale = 0.9 } ]
-% {Crimson Roman}
-
 % If -- dashes don't work for your font, try
 % Renderer = Basic
 % http://tex.stackexchange.com/questions/20580/how-to-enable-ligatures-for-emdash-endash-in-luatex
 
 \setmainfont[
-  SmallCapsFont = Arno Pro,
+  SmallCapsFont = Crimson Roman,
   SmallCapsFeatures= { Ligatures = TeX, Letters = SmallCaps }
 ]{Gentium}
 
-\newfontfamily\ArnoProFont{Arno Pro}
-\newfontfamily\GentiumFont{Gentium}
+\newfontfamily\crimsonRomanFont[
+  BoldFont = Crimson Semibold,
+  ItalicFont = Crimson Italic,
+]{Crimson Roman}
+\newfontfamily\gentiumFont{Gentium}
 
 % header and footer
 
@@ -111,11 +100,14 @@
 
 % chapter
 
-\newfontfamily\chapterNameFont{Arno Pro}
-\newfontfamily\chapterTitleFont{Arno Pro}
-\newfontfamily\chapterNumberFont{Arno Pro}
-\newfontfamily\chapterAuthorFont{Arno Pro}
-\newfontfamily\chapterNoteFont{Arno Pro}
+\newfontfamily\chapterNameFont{Crimson Roman}
+\newfontfamily\chapterTitleFont{Crimson Roman}
+\newfontfamily\chapterNumberFont{Crimson Roman}
+\newfontfamily\chapterAuthorFont{Crimson Roman}
+\newfontfamily\chapterNoteFont[
+  BoldFont = Crimson Semibold,
+  ItalicFont = Crimson Italic,
+]{Crimson Roman}
 
 \newcommand{\chapterNameSize}
   {\@setfontsize\chapterNameSize{22}{24}}
@@ -130,7 +122,10 @@
 
 % section
 
-\newfontfamily\sectionFont{Arno Pro}
+\newfontfamily\sectionFont[
+  BoldFont = Crimson Semibold,
+  ItalicFont = Crimson Italic,
+]{Crimson Roman}
 
 \newcommand{\sectionSize}
   {\@setfontsize\sectionSize{13}{15}}
@@ -146,7 +141,7 @@
 % m = text width
 % d = text height
 
-\ifthenelse{\equal{\OPUS@pagePreset}{largepage}}{
+\ifthenelse{\equal{\ANEC@pagePreset}{largepage}}{
 
   % Large page
   %
@@ -250,7 +245,27 @@
 
 % === New, custom commands and environments ===
 
+\newcommand\dividerRule{%
+{\centering\bigskip
+{\color[gray]{0.6}\rule{0.6\linewidth}{0.2pt}}
+
+\bigskip}%
+}
+
 % === Renewing package macros ===
+
+\renewenvironment{quote}%
+{\small
+\list{}{\rightmargin\leftmargin}%
+\item[]}%
+{\endlist}
+
+\newcommand\quoteref[1]{%
+\par
+{\footnotesize #1}
+\par
+}
+
 
 \renewcommand\footnoterule{%
   \vspace*{\baselineskip}%
@@ -361,12 +376,12 @@
       \ifchapterauthor%
         \vskip 0.5\onelineskip%
         \chapterAuthorFmt{\chapterAuthor}%
-        \chapterauthorfalse%
+        \global\chapterauthorfalse%
       \fi%
       \ifchapternote%
         \vskip 0.5\onelineskip%
         \chapterNoteFmt{\chapterNote}%
-        \chapternotefalse%
+        \global\chapternotefalse%
       \fi%
     }%
   }
