@@ -26,7 +26,7 @@
 
 \pgfkeys{
   /ANEC/.cd,
-  pagePreset/.default=largepage,
+  pagePreset/.default=largepage,% "largepage": 6x9in, "smallpage": 5.25x8in
   pagePreset/.store in=\ANEC@pagePreset,
   babelLanguage/.default=british,
   babelLanguage/.store in=\ANEC@babelLanguage,
@@ -172,6 +172,7 @@
   \setlength{\vleftmargin}{2em}
 
   \setlength{\parskip}{5pt}
+  \setlength{\parindent}{0pt}
 
   \setstocksize{9in}{6in}
   \settrimmedsize{\stockheight}{\stockwidth}{*}
@@ -179,32 +180,59 @@
   % It won't be exactly 33 lines because of the parskip numbers,
   % but close enough for our purpose.
   \settypeblocksize{32\baselineskip + \topskip}{*}{0.577}% 1/1.732 (sqrt(3)), Hexagon
-  \setlrmargins{*}{*}{1.125}% major 2nd 15:16, 25.6mm | 22.77mm
+  \setlrmargins{*}{*}{1.125}% 1/0.889 major 2nd, 25.6mm | 22.77mm
   \setulmargins{*}{*}{1.701}% Tall Pentagon, 17.9mm | 30.52mm
   \setlength{\footskip}{3\baselineskip}
   \checkandfixthelayout
 
 }{
+\ifthenelse{\equal{\ANEC@pagePreset}{smallpage}}{
 
-  % Small page size
+  % Small page
+  %
+  % 5.25in x 8in page
+  % P = 1.523 (~Pentagon (1.539), b/w fifth (1.5) and minor 6th (1.6))
+  % T = 1.618 (Golden Section, ~minor 6th (1.6))
 
-  %% 5.25in x 8in page
-  %% P = 1.523 (~Pentagon (1.539), b/w fifth (1.5) and minor 6th (1.6))
-  %% T = 1.618 (Golden Section, ~minor 6th (1.6))
-  %\geometry{
-  %paperwidth=5.25in,
-  %paperheight=8in,
-  %top=0.8in,
-  %inner=0.8in,
-  %textheight=6in,
-  %textwidth=3.75in,
-  %%showframe,
-  %}
-  %\setstocksize{8in}{5.25in}
+  % For 11pt / 16pt font size, 27 lines, Gentium font, no parskip, 17pt parindent.
+  % Small book binding swallows more space in the center, hence the 0.889 L-R margin ratio, instead of the 1.125 of the larger page size.
 
-}
 
-\setlength{\parindent}{0pt}
+  % === normalsize ===
+
+  \renewcommand{\normalsize}{%
+    \@setfontsize\normalsize{11}{16}
+    \abovedisplayskip 11\p@ \@plus3\p@ \@minus6\p@
+    \abovedisplayshortskip \z@ \@plus3\p@
+    \belowdisplayshortskip 6.5\p@ \@plus3.5\p@ \@minus3\p@
+    \belowdisplayskip \abovedisplayskip
+    \color{textbody}
+    \let\@listi\@listI}
+  \normalsize
+
+  % === indentations ===
+
+  \setlength{\vgap}{1.5em}
+  \setlength{\vindent}{\vgap}
+  \setlength{\vleftmargin}{2em}
+
+  \setlength{\parskip}{0pt}
+  \setlength{\parindent}{17pt}
+
+  \setstocksize{8in}{5.25in}
+  \settrimmedsize{\stockheight}{\stockwidth}{*}
+  \settrims{0pt}{0pt}
+  \settypeblocksize{27\baselineskip + \topskip}{*}{0.618}% 1/1.618 Golden section
+  \setlrmargins{*}{*}{0.889}% major 2nd 15:16
+  \setulmargins{*}{*}{1.701}% Tall Pentagon
+  \setlength{\footskip}{3\baselineskip}
+  \checkandfixthelayout
+
+}{
+
+  % other page sizes?
+
+}}
 
 %% ========
 %% Hyperref
