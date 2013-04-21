@@ -44,6 +44,9 @@
 % All Other Declarations
 % ======================
 
+% Load packages here, unless there it makes more sense to load it
+% later.
+
 \LoadClass[11pt,twoside]{memoir}
 
 \RequirePackage[\ANEC@babelLanguage]{babel}
@@ -60,6 +63,7 @@
 \RequirePackage{ccicons}
 \RequirePackage{multicol}
 \RequirePackage{ifthen}
+\RequirePackage{titletoc}
 
 \RequirePackage{tikz}
 
@@ -90,6 +94,9 @@
 \newfontfamily\crimsonRomanFont[
   BoldFont = Crimson Semibold,
   ItalicFont = Crimson Italic,
+]{Crimson Roman}
+\newfontfamily\crimsonRomanFontOldNum[
+  Numbers = OldStyle,
 ]{Crimson Roman}
 \newfontfamily\gentiumFont{Gentium}
 
@@ -131,7 +138,6 @@
 
 \newcommand{\sectionSize}
   {\@setfontsize\sectionSize{13}{15}}
-
 
 % === Page geometry and layout ===
 
@@ -271,6 +277,10 @@
 \doublehyphendemerits=900
 \brokenpenalty=990
 
+% === common hyphenation exceptions and corrections ===
+
+\hyphenation{season}
+
 % === soul settings ===
 
 \sodef\soTocChapter{}{.1em}{.5em plus.1em}{.1em plus.1em minus.1em}
@@ -287,6 +297,18 @@
 }
 
 % === Renewing package macros ===
+
+\let\mainmatterOrig=\mainmatter
+\renewcommand{\mainmatter}{%
+  \mainmatterOrig%
+  \addtocontents{toc}{\addvspace{10pt}}%
+}
+
+\let\backmatterOrig=\backmatter
+\renewcommand{\backmatter}{%
+  \backmatterOrig%
+  \addtocontents{toc}{\addvspace{15pt}}%
+}
 
 \renewenvironment{quote}%
 {\small
@@ -353,6 +375,111 @@
 
 % === TOC settings ===
 
+\maxtocdepth{section}
+
+% Fixes Undefined control sequence error for \@chapapp@head
+\renewcommand\chapternumberline[1]{\numberline{#1}}
+\renewcommand\partnumberline[1]{\numberline{#1}}
+
+\newcommand*\l@chapterinfo{\@nodottedtocline{0}{6pc}{1pc}{1pc}}
+
+\def\@nodottedtocline#1#2#3#4#5#6{%
+  \ifnum #1>\c@tocdepth \else
+    %\vskip \z@ \@plus.2\p@
+    \vspace*{-3pt}
+    {\footnotesize\itshape\crimsonRomanFont
+     \leftskip #2\relax
+     \rightskip \@tocrmarg
+     \advance\rightskip #3\relax
+     \parfillskip -\rightskip
+     \parindent #2\relax\@afterindenttrue
+     \interlinepenalty\@M
+     \leavevmode
+     \@tempdima #4\relax
+     \advance\leftskip \@tempdima \null\nobreak\hskip -\leftskip
+     {#5}\nobreak
+     \leaders\hbox{$\m@th
+        \mkern \@dotsep mu\hbox{\,}\mkern \@dotsep
+        mu$}\hfill
+     \nobreak
+     \hb@xt@\@pnumwidth{\hfil\normalsize\normalfont}%
+     \par}%
+  \fi}
+
+\def\chapterinfo#1{%
+    \addcontentsline{toc}{chapterinfo}{%
+    \noexpand\numberline{}#1}%
+}
+
+\titlecontents{part}[6pc]
+{\addvspace{5pt}%
+\normalsize\crimsonRomanFont}%
+{%
+  \contentsmargin{0pt}%
+  \makebox[0pt][r]{%
+  \partname~\thecontentslabel%
+  \hspace*{0.5em}$\cdot$\hspace*{0.5em}}%
+}
+{\contentsmargin{0pt}}
+{\hfill\normalsize\crimsonRomanFont\thecontentspage}
+[\addvspace{5pt}]
+
+\titlecontents{chapter}[6pc]
+{\normalsize\crimsonRomanFont}%
+{%
+  \contentsmargin{0pt}%
+  \makebox[0pt][r]{%
+    \chaptername~{\crimsonRomanFontOldNum\thecontentslabel}%
+    \hspace*{0.5em}$\cdot$\hspace*{0.5em}%
+  }%
+}
+{\contentsmargin{0pt}%
+\itshape}
+{\hfill\normalsize\crimsonRomanFont\thecontentspage}
+
+% FIXME: perhaps \numberline is erroring out b/c "A" is not numerical
+%! Missing number, treated as zero.
+%<to be read again>
+%                   \ttll@appendix
+%l.21 ...rline {A}The Time Machine}{11}{appendix.A}
+
+%\titlecontents{appendix}[6pc]
+%{\normalsize\crimsonRomanFont}%
+%{%
+%  \contentsmargin{0pt}%
+%  \makebox[0pt][r]{%
+%    \appendixname~{\crimsonRomanFontOldNum\thecontentslabel}%
+%    \hspace*{0.5em}$\cdot$\hspace*{0.5em}%
+%  }%
+%}
+%{\contentsmargin{0pt}%
+%\itshape}
+%{\hfill\normalsize\crimsonRomanFont\thecontentspage}
+
+\titlecontents{section}[6pc]
+{\addvspace{1pt}%
+\small\crimsonRomanFont}
+{\contentslabel[\thecontentslabel]{6pc}}
+{}
+{\hfill\normalsize\crimsonRomanFont\thecontentspage}
+
+\titlecontents*{subsection}[6pc]
+{\addvspace{-1pt}%
+\small\crimsonRomanFont}
+{}
+{}
+{\ --- \thecontentspage}
+[ \textbullet\ ][]
+
+\renewcommand{\tableofcontents}{%
+\chapterstyle{hightitle}
+\chapter*{\contentsname}
+\chapterstyle{lowtitle}
+\@starttoc{toc}
+}
+
+
+
 % === Part and Book styles ===
 
 % === Chapter styles ===
@@ -389,22 +516,27 @@
   \renewcommand*\chapterNote{#1}%
 }
 
+\newlength\chapterTitleLeftSkip
+\setlength{\chapterTitleLeftSkip}{17pt}
+
 \makechapterstyle{lowtitle}{
   \chapterstyle{default}
   \setlength{\beforechapskip}{30mm}
+  \setlength{\chapterTitleLeftSkip}{17pt}
   \renewcommand\printchaptername{}
   \renewcommand\chapternamenum{}
   \renewcommand\chapnumfont{\chapterNumberFont\chapterNumberSize}
   \renewcommand\printchapternum{%
     \chapnumfont\color{chapternum}%
-    \hspace*{17pt}\thechapter%
+    \hspace*{\chapterTitleLeftSkip}\thechapter%
   }
   \setlength{\midchapskip}{2\onelineskip}
   \renewcommand\afterchapternum{\par\nobreak\vskip \midchapskip}
   \renewcommand\printchapternonum{}
   \renewcommand\chaptitlefont{\chapterTitleFont\chapterTitleSize}
   \renewcommand*\printchaptertitle[1]{%
-    \raggedright\hspace*{17pt}\parbox{\linewidth - 17pt}{%
+    \raggedright\hspace*{\chapterTitleLeftSkip}%
+    \parbox{\linewidth - \chapterTitleLeftSkip}{%
       \raggedright\chaptitlefont\color{chaptertitle}%
       \MakeUppercase{\soChapter{##1}}%
       \ifchapterauthor%
@@ -421,6 +553,12 @@
   }
   \setlength{\afterchapskip}{2.5\onelineskip}
   \renewcommand\afterchaptertitle{\par\nobreak\vskip \afterchapskip}%
+}
+
+\makechapterstyle{hightitle}{
+  \chapterstyle{lowtitle}
+  \setlength{\beforechapskip}{0pt}
+  \setlength{\chapterTitleLeftSkip}{6pc}
 }
 
 % alias the "fantasy" names into semantic chapter names
