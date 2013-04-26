@@ -1,7 +1,7 @@
 % Aruno Anecdote Class
 %
-% (c) Gambhiro Bhikkhu, 2013
-% gambhiro@ratanagiri.org.uk
+% Maintained by:
+% Gambhiro Bhikkhu <gambhiro@ratanagiri.org.uk>
 %
 % LPPL LaTeX Pubic Project Licence
 %
@@ -64,8 +64,11 @@
 \RequirePackage{multicol}
 \RequirePackage{ifthen}
 \RequirePackage{titletoc}
+\RequirePackage{enumitem}
 
 \RequirePackage{tikz}
+% load tikz libraries here
+% ...
 
 % === Define colors ===
 
@@ -76,6 +79,7 @@
 \definecolor{chapterauthor}{gray}{0.3}
 \definecolor{chapternote}{gray}{0.3}
 \definecolor{section}{gray}{0.3}
+\definecolor{tocleftside}{gray}{0.5}
 
 % === Load fonts ===
 
@@ -88,7 +92,8 @@
 
 \setmainfont[
   SmallCapsFont = Crimson Roman,
-  SmallCapsFeatures= { Ligatures = TeX, Letters = SmallCaps }
+  SmallCapsFeatures= { Ligatures = TeX, Letters = SmallCaps },
+  BoldFont = Gentium Book Basic Bold,
 ]{Gentium}
 
 \newfontfamily\crimsonRomanFont[
@@ -138,6 +143,11 @@
 
 \newcommand{\sectionSize}
   {\@setfontsize\sectionSize{13}{15}}
+
+% other sizes
+
+\newcommand{\smaller}
+  {\@setfontsize\smaller{9}{11}}
 
 % === Page geometry and layout ===
 
@@ -279,15 +289,19 @@
 
 % === common hyphenation exceptions and corrections ===
 
-\hyphenation{season}
+\hyphenation{season wisdom develop-ment respon-sible pheno-mena
+philo-sophical}
+
+%\hyphenation{accur-ately argu-men-ta-tive attach Ayu-dhaya becomes ben-e-fi-cial capa-bil-ity car-ry car-ry-ing cere-monies cere-mony ces-sa-tion chal-lenge chal-leng-ing clas-si-fi-ca-tion clas-si-fi-ca-tions clas-si-fied com-mu-nity con-di-tion con-di-tioned con-struc-tions con-tem-plate con-tem-plat-ing con-tem-pla-tion cul-ti-vate cul-ti-vates cul-ti-vat-ing cul-ti-vation def-i-ni-tion de-ter-mine de-ter-mined dhamma dhammas dis-cern-ment dis-con-tent dis-cur-sive dying em-pha-size enlight-ened equa-nim-ity es-pe-cial-ly estab-lish exist-ence ex-pe-ri-ence hap-pen-ing having ig-no-rance immedi-ately im-per-ma-nent in-nu-mer-a-ble in-se-cu-ri-ty in-spir-ing in-struct-ed in-ves-ti-gate in-ves-ti-ga-tion iso-late iso-lat-ed Keuan lay-peo-ple ma-te-ri-al mat-u-ra-tion medi-tate medi-ta-tion medi-ta-tive mental mon-as-teries mon-as-tery Nana-chat or-dain or-dain-ed or-di-na-tion orig-inate oth-er-wise pene-trat-ing per-son-al per-son-al-ity phe-nom-e-na phe-nom-e-non po-si-tion pow-er pow-ers pre-vi-ous pro-lif-er-ate pro-lif-er-ating pro-lif-er-a-tions puthu-jjana quest-ion rec-i-ta-tion sat-is-fac-tory sen-sa-tion sen-sa-tions sim-i-lar suf-fer-ing sup-po-si-tion syn-on-y-mous tem-per-a-ment tem-per-a-ments tong-rat tran-scend tran-scend-ent tran-scends un-con-di-tioned under-stand under-stood un-hap-pi-ness un-sat-is-fac-tori-ness un-sat-is-fac-tory ven-er-able wea-ri-ness what-ev-er when-ever wher-ever whole-hearted whole-heart-edly wrong-do-ing}
 
 % === soul settings ===
 
 \sodef\soTocChapter{}{.1em}{.5em plus.1em}{.1em plus.1em minus.1em}
 \sodef\soSection{}{.07em}{.4em plus.1em}{.1em plus.1em minus.1em}
-\sodef\soChapter{}{.1em}{.5em plus.1em}{.1em plus.1em minus.1em}
+%\sodef\soChapter{}{.1em}{.5em plus.1em}{.1em plus.1em minus.1em}
+\sodef\soChapter{}{.06em}{.4em plus.1em}{.1em plus.1em minus.1em}
 
-% === New, custom commands and environments ===
+% === Custom commands and environments ===
 
 \newcommand\dividerRule{%
 {\centering\bigskip
@@ -295,6 +309,40 @@
 
 \bigskip}%
 }
+
+\newcommand*{\subtitle}[1]{\def\@thesubtitle{#1}}
+\newcommand*{\editionInfo}[1]{\def\@theEditionInfo{#1}}
+\newcommand*{\printedByInfo}[1]{\def\@thePrintedByInfo{#1}}
+\newcommand*{\ISBN}[1]{\def\@theISBN{#1}}
+
+\newcommand\thesubtitle{\@thesubtitle}
+\newcommand\theEditionInfo{\@theEditionInfo}
+\newcommand\thePrintedByInfo{\@thePrintedByInfo}
+\newcommand\theISBN{\@theISBN}
+
+\newsavebox{\quotepagebox}
+\newenvironment{quotepage}[1]
+  {\begin{lrbox}{\quotepagebox}\begin{minipage}{#1}
+   \setlength{\parskip}{0.6\baselineskip}
+   \setlength{\parindent}{0pt}}
+  {\end{minipage}\end{lrbox}%
+   \begin{tikzpicture}[remember picture,overlay]
+   \node at (current page.center) {\usebox{\quotepagebox}};
+   \end{tikzpicture}}
+
+
+\newenvironment{packeditemize}%
+{\begin{itemize}[
+  itemindent=0pt,
+  leftmargin=15pt,
+  rightmargin=0pt,
+  itemsep=2pt,
+  topsep=0pt,
+  parsep=0pt,
+  partopsep=2pt,
+  partopsep=0pt,
+]%
+}{\end{itemize}}
 
 % === Renewing package macros ===
 
@@ -381,7 +429,11 @@
 \renewcommand\chapternumberline[1]{\numberline{#1}}
 \renewcommand\partnumberline[1]{\numberline{#1}}
 
-\newcommand*\l@chapterinfo{\@nodottedtocline{0}{6pc}{1pc}{1pc}}
+% Fixes Missing number error when chapter number is not numeric, as in
+% Appendix A
+\let\ttll@appendix\ttll@chapter
+
+\newcommand*\l@chapternote{\@nodottedtocline{0}{6pc}{1pc}{1pc}}
 
 \def\@nodottedtocline#1#2#3#4#5#6{%
   \ifnum #1>\c@tocdepth \else
@@ -406,10 +458,13 @@
      \par}%
   \fi}
 
-\def\chapterinfo#1{%
-    \addcontentsline{toc}{chapterinfo}{%
+\def\tocChapterNote#1{%
+    \addcontentsline{toc}{chapternote}{%
     \noexpand\numberline{}#1}%
 }
+
+% the right TOC margin
+\contentsmargin{0pt}
 
 \titlecontents{part}[6pc]
 {\addvspace{5pt}%
@@ -417,7 +472,7 @@
 {%
   \contentsmargin{0pt}%
   \makebox[0pt][r]{%
-  \partname~\thecontentslabel%
+  {\color{tocleftside}\partname~\thecontentslabel}%
   \hspace*{0.5em}$\cdot$\hspace*{0.5em}}%
 }
 {\contentsmargin{0pt}}
@@ -429,7 +484,8 @@
 {%
   \contentsmargin{0pt}%
   \makebox[0pt][r]{%
-    \chaptername~{\crimsonRomanFontOldNum\thecontentslabel}%
+    {\color{tocleftside}%
+    \chaptername~{\crimsonRomanFontOldNum\thecontentslabel}}%
     \hspace*{0.5em}$\cdot$\hspace*{0.5em}%
   }%
 }
@@ -437,27 +493,22 @@
 \itshape}
 {\hfill\normalsize\crimsonRomanFont\thecontentspage}
 
-% FIXME: perhaps \numberline is erroring out b/c "A" is not numerical
-%! Missing number, treated as zero.
-%<to be read again>
-%                   \ttll@appendix
-%l.21 ...rline {A}The Time Machine}{11}{appendix.A}
-
-%\titlecontents{appendix}[6pc]
-%{\normalsize\crimsonRomanFont}%
-%{%
-%  \contentsmargin{0pt}%
-%  \makebox[0pt][r]{%
-%    \appendixname~{\crimsonRomanFontOldNum\thecontentslabel}%
-%    \hspace*{0.5em}$\cdot$\hspace*{0.5em}%
-%  }%
-%}
-%{\contentsmargin{0pt}%
-%\itshape}
-%{\hfill\normalsize\crimsonRomanFont\thecontentspage}
+\titlecontents{appendix}[6pc]
+{\normalsize\crimsonRomanFont}%
+{%
+  \contentsmargin{0pt}%
+  \makebox[0pt][r]{%
+    {\color{tocleftside}%
+    \appendixname~{\crimsonRomanFontOldNum\thecontentslabel}}%
+    \hspace*{0.5em}$\cdot$\hspace*{0.5em}%
+  }%
+}
+{\contentsmargin{0pt}%
+\itshape}
+{\hfill\normalsize\crimsonRomanFont\thecontentspage}
 
 \titlecontents{section}[6pc]
-{\addvspace{1pt}%
+{\addvspace{-2pt}%
 \small\crimsonRomanFont}
 {\contentslabel[\thecontentslabel]{6pc}}
 {}
@@ -474,11 +525,10 @@
 \renewcommand{\tableofcontents}{%
 \chapterstyle{hightitle}
 \chapter*{\contentsname}
+\markboth{\contentsname}{\contentsname}
 \chapterstyle{lowtitle}
 \@starttoc{toc}
 }
-
-
 
 % === Part and Book styles ===
 
@@ -491,10 +541,10 @@
 \newif\ifchapterauthor
 \chapterauthorfalse
 
-\newcommand*{\chapterAuthor}{}
-\newcommand*{\setChapterAuthor}[1]{%
+\newcommand*{\theChapterAuthor}{}
+\newcommand*{\chapterAuthor}[1]{%
   \chapterauthortrue%
-  \renewcommand*\chapterAuthor{#1}%
+  \renewcommand*{\theChapterAuthor}{#1}%
 }
 
 \newcommand\chapterAuthorFmt[1]{%
@@ -510,10 +560,21 @@
   \itshape #1%
 }
 
-\newcommand*{\chapterNote}{}
-\newcommand*{\setChapterNote}[1]{%
+\newcommand*{\theChapterNote}{}
+\newcommand*{\chapterNote}[1]{%
   \chapternotetrue%
-  \renewcommand*\chapterNote{#1}%
+  \renewcommand*\theChapterNote{#1}%
+}
+
+\newif\ifchapterfootnote
+\chapterfootnotefalse
+
+\newcommand*{\theChapterFootnoteMark}{}
+\newcommand*{\theChapterFootnoteText}{}
+\newcommand*{\chapterFootnote}[2][\footnotemark]{%
+  \chapterfootnotetrue%
+  \renewcommand*\theChapterFootnoteMark{#1}%
+  \renewcommand*\theChapterFootnoteText{\footnotetext{#2}}%
 }
 
 \newlength\chapterTitleLeftSkip
@@ -539,17 +600,24 @@
     \parbox{\linewidth - \chapterTitleLeftSkip}{%
       \raggedright\chaptitlefont\color{chaptertitle}%
       \MakeUppercase{\soChapter{##1}}%
+      \ifchapterfootnote%
+        \hspace*{2pt}\theChapterFootnoteMark%
+      \fi%
       \ifchapterauthor%
         \vskip 0.5\onelineskip%
-        \chapterAuthorFmt{\chapterAuthor}%
+        \chapterAuthorFmt{\theChapterAuthor}%
         \global\chapterauthorfalse%
       \fi%
       \ifchapternote%
         \vskip 0.5\onelineskip%
-        \chapterNoteFmt{\chapterNote}%
+        \chapterNoteFmt{\theChapterNote}%
         \global\chapternotefalse%
       \fi%
     }%
+    \ifchapterfootnote%
+      \theChapterFootnoteText%
+      \global\chapterfootnotefalse%
+    \fi%
   }
   \setlength{\afterchapskip}{2.5\onelineskip}
   \renewcommand\afterchaptertitle{\par\nobreak\vskip \afterchapskip}%
