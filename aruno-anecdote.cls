@@ -11,7 +11,7 @@
 % ==============
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{aruno-anecdote}[2013/04/13 v0.2 A document class for books with a lighter content.]
+\ProvidesClass{aruno-anecdote}[2013/04/13 v0.3 A document class for books with a lighter content.]
 
 % ========================
 % Preliminary Declarations
@@ -282,15 +282,34 @@
 % Use this instead:
 \renewcommand\britishhyphenmins{{3}{3}}
 
+% lastparline:
+%   ``Ensures that the last line of a paragraph is at least as long as the
+%   double value of \parindent. When LuaTEX is used, the solution provided
+%   by Patrick Gundlach is used. With other rendering engines, it is the
+%   native solution provided by Enrico Gregorio that serves as an
+%   implementation.''
+% http://tex.stackexchange.com/questions/28357/ensure-minimal-length-of-last-line/
+
+% Load with draft option to visualize inserted nobreaks.
+\RequirePackage[lastparline]{impnattypo}
+
+% Alternatively, egreg's native solution:
+% http://tex.stackexchange.com/a/28358/831
+%\setlength{\parfillskip}{0pt plus\dimexpr\textwidth-2\parindent}
+
+% Last line at least 20% of textwidth
+%\parfillskip 0pt plus 0.8\textwidth
+
 \hyphenpenalty=700
 \exhyphenpenalty=50
 \doublehyphendemerits=900
 \brokenpenalty=990
 
+\RequirePackage[defaultlines=2,all]{nowidow}
+
 % === common hyphenation exceptions and corrections ===
 
-\hyphenation{season wisdom develop-ment respon-sible pheno-mena
-philo-sophical}
+\hyphenation{season wisdom develop-ment respon-sible pheno-mena philo-sophical munindo}
 
 %\hyphenation{accur-ately argu-men-ta-tive attach Ayu-dhaya becomes ben-e-fi-cial capa-bil-ity car-ry car-ry-ing cere-monies cere-mony ces-sa-tion chal-lenge chal-leng-ing clas-si-fi-ca-tion clas-si-fi-ca-tions clas-si-fied com-mu-nity con-di-tion con-di-tioned con-struc-tions con-tem-plate con-tem-plat-ing con-tem-pla-tion cul-ti-vate cul-ti-vates cul-ti-vat-ing cul-ti-vation def-i-ni-tion de-ter-mine de-ter-mined dhamma dhammas dis-cern-ment dis-con-tent dis-cur-sive dying em-pha-size enlight-ened equa-nim-ity es-pe-cial-ly estab-lish exist-ence ex-pe-ri-ence hap-pen-ing having ig-no-rance immedi-ately im-per-ma-nent in-nu-mer-a-ble in-se-cu-ri-ty in-spir-ing in-struct-ed in-ves-ti-gate in-ves-ti-ga-tion iso-late iso-lat-ed Keuan lay-peo-ple ma-te-ri-al mat-u-ra-tion medi-tate medi-ta-tion medi-ta-tive mental mon-as-teries mon-as-tery Nana-chat or-dain or-dain-ed or-di-na-tion orig-inate oth-er-wise pene-trat-ing per-son-al per-son-al-ity phe-nom-e-na phe-nom-e-non po-si-tion pow-er pow-ers pre-vi-ous pro-lif-er-ate pro-lif-er-ating pro-lif-er-a-tions puthu-jjana quest-ion rec-i-ta-tion sat-is-fac-tory sen-sa-tion sen-sa-tions sim-i-lar suf-fer-ing sup-po-si-tion syn-on-y-mous tem-per-a-ment tem-per-a-ments tong-rat tran-scend tran-scend-ent tran-scends un-con-di-tioned under-stand under-stood un-hap-pi-ness un-sat-is-fac-tori-ness un-sat-is-fac-tory ven-er-able wea-ri-ness what-ev-er when-ever wher-ever whole-hearted whole-heart-edly wrong-do-ing}
 
@@ -306,8 +325,20 @@ philo-sophical}
 \newcommand\dividerRule{%
 {\centering\bigskip
 {\color[gray]{0.6}\rule{0.6\linewidth}{0.2pt}}
+\par\bigskip}%
+}
 
-\bigskip}%
+\newcommand\emptysheet{%
+  \cleardoublepage
+  \thispagestyle{empty}\mbox{}\newpage
+  \thispagestyle{empty}\mbox{}\newpage
+}
+
+\newcommand\emptydoublepage\emptysheet
+
+\newcommand\emptypage{%
+  \clearpage
+  \thispagestyle{empty}\mbox{}\newpage
 }
 
 \newcommand*{\subtitle}[1]{\def\@thesubtitle{#1}}
@@ -330,7 +361,6 @@ philo-sophical}
    \node at (current page.center) {\usebox{\quotepagebox}};
    \end{tikzpicture}}
 
-
 \newenvironment{packeditemize}%
 {\begin{itemize}[
   itemindent=0pt,
@@ -339,10 +369,34 @@ philo-sophical}
   itemsep=2pt,
   topsep=0pt,
   parsep=0pt,
-  partopsep=2pt,
   partopsep=0pt,
 ]%
 }{\end{itemize}}
+
+\newlength\qw
+%\setlength\qw{\widthof{\normalsize\normalfont\itshape Q:\space}}
+\setlength\qw{17pt}% same as parindent for smallpage
+
+\newcommand{\question}[1]{%
+  \smallskip%
+  \par\noindent\hangindent=\qw%
+  \ifthenelse{\equal{#1}{}}{\textit{Q:}\space}{\textit{#1:}\space}%
+}
+
+\newcommand{\questionBi}[2]{%
+  \smallskip%
+  \par\noindent\hangindent=\qw%
+  \textit{Q: #1}
+  \smallskip%
+  \par\noindent\hangindent=\qw%
+  \textit{Q: #2}
+}
+
+\newcommand{\answer}[1]{%
+  \smallskip%
+  \par\noindent%
+  \ifthenelse{\equal{#1}{}}{\textit{A:}\space}{\textit{#1:}\space}%
+}
 
 % === Renewing package macros ===
 
@@ -417,7 +471,8 @@ philo-sophical}
 
 \aliaspagestyle{normalpage}{bottomcorner}
 \aliaspagestyle{chapter}{bottomcenter}
-
+\aliaspagestyle{part}{empty}
+\aliaspagestyle{afterpart}{empty}
 
 \pagestyle{normalpage}
 
@@ -530,7 +585,13 @@ philo-sophical}
 \@starttoc{toc}
 }
 
-% === Part and Book styles ===
+% === Book styles ===
+
+% === Part styles ===
+
+\renewcommand{\partnamefont}{\large\chapterTitleFont\MakeUppercase}
+\renewcommand{\partnumfont}{\large\crimsonRomanFont\MakeUppercase}
+\renewcommand{\parttitlefont}{\large\crimsonRomanFont\MakeUppercase}
 
 % === Chapter styles ===
 
