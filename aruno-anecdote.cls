@@ -30,6 +30,11 @@
   pagePreset/.store in=\ANEC@pagePreset,
   babelLanguage/.default=british,
   babelLanguage/.store in=\ANEC@babelLanguage,
+  % TODO: implement to apply these policies
+  %leftmarkPolicy/.default=chapter,
+  %leftmarkPolicy/.store in=\ANEC@leftmark,
+  %rightmarkPolicy/.default=sectionOrAuthor,
+  %rightmarkPolicy/.store in=\ANEC@rightmark,
 }
 
 % Pass all unknown options to memoir
@@ -80,6 +85,9 @@
 \definecolor{chapternote}{gray}{0.3}
 \definecolor{section}{gray}{0.3}
 \definecolor{tocleftside}{gray}{0.5}
+\definecolor{tocleftsidepart}{gray}{0.2}
+\definecolor{partname}{gray}{0.5}
+\definecolor{parttitle}{gray}{0.5}
 
 % === Load fonts ===
 
@@ -113,6 +121,11 @@
   {\@setfontsize\footSize{9}{9}}
 
 % chapter
+
+\newfontfamily\partTitleFont[
+  ItalicFont = Shaker 2 Light Italic,
+  Renderer = Basic,
+]{Shaker 2 Light}
 
 \newfontfamily\chapterNameFont{Crimson Roman}
 \newfontfamily\chapterTitleFont{Crimson Roman}
@@ -190,6 +203,8 @@
   \setlength{\parskip}{5pt}
   \setlength{\parindent}{0pt}
 
+  % === setup page layout ===
+
   \setstocksize{9in}{6in}
   \settrimmedsize{\stockheight}{\stockwidth}{*}
   \settrims{0pt}{0pt}
@@ -232,6 +247,8 @@
   \setlength{\vindent}{\vgap}
   \setlength{\vleftmargin}{2em}
 
+  % === setup page layout ===
+
   \setlength{\parskip}{0pt}
   \setlength{\parindent}{17pt}
 
@@ -250,9 +267,7 @@
 
 }}
 
-%% ========
-%% Hyperref
-%% ========
+% === hyperref ===
 
 \RequirePackage{hyperref}
 \hypersetup{
@@ -268,19 +283,21 @@
   openlevel=2
 ]{bookmark}
 
+% === penalties and hyphenation ===
+
 % memoir's more allowing penalties
 \midsloppy
 
-%% Make hyphenation less frequent
-%% WARNING: there will be more underfull lines, and some very streched
-%% lines. Check the log file for underfull warnings.
-
-% There are reset every time the language is reset.
-%\lefthyphenmin=3
-%\righthyphenmin=3
-
-% Use this instead:
 \renewcommand\britishhyphenmins{{3}{3}}
+
+% The lastparline or the parfillskip solution is overkill in many
+% places. It is optimal for larger paragraphs, but creates too much
+% strech in every other case, particulary not in the main text, such as
+% the TOC and so on.
+%
+% It can be useful with a limited scope, but for general application it
+% becomes more of a problem to check where it has gone too far in
+% adjusting line breaks.
 
 % lastparline:
 %   ``Ensures that the last line of a paragraph is at least as long as the
@@ -291,7 +308,7 @@
 % http://tex.stackexchange.com/questions/28357/ensure-minimal-length-of-last-line/
 
 % Load with draft option to visualize inserted nobreaks.
-\RequirePackage[lastparline]{impnattypo}
+% \RequirePackage[lastparline]{impnattypo}
 
 % Alternatively, egreg's native solution:
 % http://tex.stackexchange.com/a/28358/831
@@ -309,15 +326,38 @@
 
 % === common hyphenation exceptions and corrections ===
 
-\hyphenation{season wisdom develop-ment respon-sible pheno-mena philo-sophical munindo}
+\hyphenation{season wisdom develop-ment respon-sible pheno-mena
+philo-sophical munindo amaravati thai-land}
 
-%\hyphenation{accur-ately argu-men-ta-tive attach Ayu-dhaya becomes ben-e-fi-cial capa-bil-ity car-ry car-ry-ing cere-monies cere-mony ces-sa-tion chal-lenge chal-leng-ing clas-si-fi-ca-tion clas-si-fi-ca-tions clas-si-fied com-mu-nity con-di-tion con-di-tioned con-struc-tions con-tem-plate con-tem-plat-ing con-tem-pla-tion cul-ti-vate cul-ti-vates cul-ti-vat-ing cul-ti-vation def-i-ni-tion de-ter-mine de-ter-mined dhamma dhammas dis-cern-ment dis-con-tent dis-cur-sive dying em-pha-size enlight-ened equa-nim-ity es-pe-cial-ly estab-lish exist-ence ex-pe-ri-ence hap-pen-ing having ig-no-rance immedi-ately im-per-ma-nent in-nu-mer-a-ble in-se-cu-ri-ty in-spir-ing in-struct-ed in-ves-ti-gate in-ves-ti-ga-tion iso-late iso-lat-ed Keuan lay-peo-ple ma-te-ri-al mat-u-ra-tion medi-tate medi-ta-tion medi-ta-tive mental mon-as-teries mon-as-tery Nana-chat or-dain or-dain-ed or-di-na-tion orig-inate oth-er-wise pene-trat-ing per-son-al per-son-al-ity phe-nom-e-na phe-nom-e-non po-si-tion pow-er pow-ers pre-vi-ous pro-lif-er-ate pro-lif-er-ating pro-lif-er-a-tions puthu-jjana quest-ion rec-i-ta-tion sat-is-fac-tory sen-sa-tion sen-sa-tions sim-i-lar suf-fer-ing sup-po-si-tion syn-on-y-mous tem-per-a-ment tem-per-a-ments tong-rat tran-scend tran-scend-ent tran-scends un-con-di-tioned under-stand under-stood un-hap-pi-ness un-sat-is-fac-tori-ness un-sat-is-fac-tory ven-er-able wea-ri-ness what-ev-er when-ever wher-ever whole-hearted whole-heart-edly wrong-do-ing}
+%\hyphenation{accur-ately argu-men-ta-tive attach Ayu-dhaya becomes
+%ben-e-fi-cial capa-bil-ity car-ry car-ry-ing cere-monies cere-mony
+%ces-sa-tion chal-lenge chal-leng-ing clas-si-fi-ca-tion
+%clas-si-fi-ca-tions clas-si-fied com-mu-nity con-di-tion
+%con-di-tioned con-struc-tions con-tem-plate con-tem-plat-ing
+%con-tem-pla-tion cul-ti-vate cul-ti-vates cul-ti-vat-ing
+%cul-ti-vation def-i-ni-tion de-ter-mine de-ter-mined dhamma dhammas
+%dis-cern-ment dis-con-tent dis-cur-sive dying em-pha-size
+%enlight-ened equa-nim-ity es-pe-cial-ly estab-lish exist-ence
+%ex-pe-ri-ence hap-pen-ing having ig-no-rance immedi-ately
+%im-per-ma-nent in-nu-mer-a-ble in-se-cu-ri-ty in-spir-ing
+%in-struct-ed in-ves-ti-gate in-ves-ti-ga-tion iso-late iso-lat-ed
+%Keuan lay-peo-ple ma-te-ri-al mat-u-ra-tion medi-tate medi-ta-tion
+%medi-ta-tive mental mon-as-teries mon-as-tery Nana-chat or-dain
+%or-dain-ed or-di-na-tion orig-inate oth-er-wise pene-trat-ing
+%per-son-al per-son-al-ity phe-nom-e-na phe-nom-e-non po-si-tion
+%pow-er pow-ers pre-vi-ous pro-lif-er-ate pro-lif-er-ating
+%pro-lif-er-a-tions puthu-jjana quest-ion rec-i-ta-tion
+%sat-is-fac-tory sen-sa-tion sen-sa-tions sim-i-lar suf-fer-ing
+%sup-po-si-tion syn-on-y-mous tem-per-a-ment tem-per-a-ments tong-rat
+%tran-scend tran-scend-ent tran-scends un-con-di-tioned under-stand
+%under-stood un-hap-pi-ness un-sat-is-fac-tori-ness un-sat-is-fac-tory
+%ven-er-able wea-ri-ness what-ev-er when-ever wher-ever whole-hearted
+%whole-heart-edly wrong-do-ing}
 
 % === soul settings ===
 
 \sodef\soTocChapter{}{.1em}{.5em plus.1em}{.1em plus.1em minus.1em}
 \sodef\soSection{}{.07em}{.4em plus.1em}{.1em plus.1em minus.1em}
-%\sodef\soChapter{}{.1em}{.5em plus.1em}{.1em plus.1em minus.1em}
 \sodef\soChapter{}{.06em}{.4em plus.1em}{.1em plus.1em minus.1em}
 
 % === Custom commands and environments ===
@@ -424,11 +464,10 @@
 \par
 }
 
-
 \renewcommand\footnoterule{%
   \vspace*{\baselineskip}%
   \kern-3\p@
-  {\color{footnoterule}\hrule height 0.1pt width \columnwidth}
+  {\color{footnoterule}\hrule height 0.25pt width \columnwidth}
   \kern2.6\p@}
 
 % === Page styles ===
@@ -521,20 +560,26 @@
 % the right TOC margin
 \contentsmargin{0pt}
 
-\titlecontents{part}[6pc]
-{\addvspace{5pt}%
+\newlength\tocLeftWidth
+\setlength\tocLeftWidth{6pc}
+
+% FIXME: the first Part heading in the TOC will also add that 20pt
+% vspace. How to add it only before a Part that follows a Chapter?
+
+\titlecontents{part}[\tocLeftWidth]
+{\addvspace{20pt}%
 \normalsize\crimsonRomanFont}%
 {%
   \contentsmargin{0pt}%
   \makebox[0pt][r]{%
-  {\color{tocleftside}\partname~\thecontentslabel}%
+  {\color{tocleftsidepart}\partname~\thecontentslabel}%
   \hspace*{0.5em}$\cdot$\hspace*{0.5em}}%
 }
 {\contentsmargin{0pt}}
 {\hfill\normalsize\crimsonRomanFont\thecontentspage}
 [\addvspace{5pt}]
 
-\titlecontents{chapter}[6pc]
+\titlecontents{chapter}[\tocLeftWidth]
 {\normalsize\crimsonRomanFont}%
 {%
   \contentsmargin{0pt}%
@@ -548,7 +593,7 @@
 \itshape}
 {\hfill\normalsize\crimsonRomanFont\thecontentspage}
 
-\titlecontents{appendix}[6pc]
+\titlecontents{appendix}[\tocLeftWidth]
 {\normalsize\crimsonRomanFont}%
 {%
   \contentsmargin{0pt}%
@@ -562,14 +607,14 @@
 \itshape}
 {\hfill\normalsize\crimsonRomanFont\thecontentspage}
 
-\titlecontents{section}[6pc]
+\titlecontents{section}[\tocLeftWidth]
 {\addvspace{-2pt}%
 \small\crimsonRomanFont}
-{\contentslabel[\thecontentslabel]{6pc}}
+{\contentslabel[\thecontentslabel]{\tocLeftWidth}}
 {}
 {\hfill\normalsize\crimsonRomanFont\thecontentspage}
 
-\titlecontents*{subsection}[6pc]
+\titlecontents*{subsection}[\tocLeftWidth]
 {\addvspace{-1pt}%
 \small\crimsonRomanFont}
 {}
@@ -589,9 +634,71 @@
 
 % === Part styles ===
 
-\renewcommand{\partnamefont}{\large\chapterTitleFont\MakeUppercase}
-\renewcommand{\partnumfont}{\large\crimsonRomanFont\MakeUppercase}
-\renewcommand{\parttitlefont}{\large\crimsonRomanFont\MakeUppercase}
+\newif\ifthisparthastitle
+\thisparthastitletrue
+
+\newif\ifthisparthasnote
+\thisparthasnotefalse
+
+\newcommand*{\thePartNote}{}
+\newcommand*{\partNote}[1]{%
+  \thisparthasnotetrue%
+  \renewcommand*\thePartNote{#1}%
+}
+
+\renewcommand{\partnamefont}{\Huge\partTitleFont\color{partname}}
+\renewcommand{\partnumfont}{\Huge\partTitleFont\color{partname}}
+\renewcommand{\parttitlefont}{\large\partTitleFont\color{parttitle}\MakeUppercase}
+\renewcommand*{\midpartskip}{\par\vskip 10pt}%
+
+% FIXME: Currently, if there isn't a part title, we have to do
+% \part{\space} to still create the part line in the TOC and the
+% bookmark index.
+%
+% It would be better if the index had ``Part One'', and the TOC would
+% handle it better too.
+
+\long\def\@part[#1]#2{%
+  \M@gettitle{#1}%
+  \phantomsection
+  \ifnum \c@secnumdepth >-2\relax
+  \refstepcounter{part}%
+  \addcontentsline{toc}{part}%
+  {\protect\partnumberline{\thepart}#1}%
+  \mempartinfo{\thepart}{#1}{#2}%
+  \else
+  \addcontentsline{toc}{part}{#1}%
+  \mempartinfo{}{#1}{#2}%
+  \fi
+  \partmark{#1}%
+  {%
+    \raggedright
+    \hspace*{\chapterTitleLeftSkip}%
+    \begin{minipage}{\linewidth - \chapterTitleLeftSkip}
+      \raggedright
+      \interlinepenalty \@M
+      \parskip\z@
+      \ifthisparthasnote
+        \thePartNote
+        \par
+        \global\thisparthasnotefalse
+        \midpartskip
+      \fi
+      \normalfont
+      \ifnum \c@secnumdepth >-2\relax
+        \resizebox{2.8cm}{!}{\printpartname \partnamenum \printpartnum}
+        \par\vskip 20pt
+      \fi
+      \ifthisparthastitle
+        \printparttitle{#2}
+      \else
+        \global\thisparthastitletrue
+      \fi
+      \par%
+    \end{minipage}%
+    \par%
+  }%
+\@endpart}
 
 % === Chapter styles ===
 
