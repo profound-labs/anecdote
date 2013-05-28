@@ -11,7 +11,7 @@
 % ==============
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{aruno-anecdote}[2013/04/13 v0.3 A document class for books with a lighter content.]
+\ProvidesClass{aruno-anecdote}[2013/05/05 v0.4 A document class for books with a lighter content.]
 
 % ========================
 % Preliminary Declarations
@@ -30,11 +30,6 @@
   pagePreset/.store in=\ANEC@pagePreset,
   babelLanguage/.default=british,
   babelLanguage/.store in=\ANEC@babelLanguage,
-  % TODO: implement to apply these policies
-  %leftmarkPolicy/.default=chapter,
-  %leftmarkPolicy/.store in=\ANEC@leftmark,
-  %rightmarkPolicy/.default=sectionOrAuthor,
-  %rightmarkPolicy/.store in=\ANEC@rightmark,
 }
 
 % Pass all unknown options to memoir
@@ -49,19 +44,17 @@
 % All Other Declarations
 % ======================
 
+\LoadClass[11pt,twoside]{memoir}
+
 % Load packages here, unless there it makes more sense to load it
 % later.
 
-\LoadClass[11pt,twoside]{memoir}
-
 \RequirePackage[\ANEC@babelLanguage]{babel}
-
 \RequirePackage{nag}
 \RequirePackage{xparse}
 \RequirePackage{soul}
 \RequirePackage{textcomp}
 \RequirePackage[cmyk]{xcolor}
-
 \RequirePackage{graphicx}
 \graphicspath{{./src-images/}}
 \RequirePackage{eso-pic}
@@ -70,10 +63,7 @@
 \RequirePackage{ifthen}
 \RequirePackage{titletoc}
 \RequirePackage{enumitem}
-
 \RequirePackage{tikz}
-% load tikz libraries here
-% ...
 
 % === Define colors ===
 
@@ -124,6 +114,7 @@
 
 \newfontfamily\partTitleFont[
   ItalicFont = Shaker 2 Light Italic,
+  BoldFont = Shaker 2 Bold,
   Renderer = Basic,
 ]{Shaker 2 Light}
 
@@ -174,13 +165,14 @@
 
 \ifthenelse{\equal{\ANEC@pagePreset}{largepage}}{
 
-  % Large page
+  % Large page size
   %
   % 6in x 9in page
   % P = 1.5 (fifth)
   % T = 1.732 (sqrt(3)), Hexagon
 
   % For 11pt / 16pt font size, Gentium font, 5pt parskip, no parindent.
+  % TODO: elaborate on reasonale
 
   % === normalsize ===
 
@@ -208,7 +200,7 @@
   \setstocksize{9in}{6in}
   \settrimmedsize{\stockheight}{\stockwidth}{*}
   \settrims{0pt}{0pt}
-  % It won't be exactly 33 lines because of the parskip numbers,
+  % It won't be exactly 33 lines because of the parskip,
   % but close enough for our purpose.
   \settypeblocksize{32\baselineskip + \topskip}{*}{0.577}% 1/1.732 (sqrt(3)), Hexagon
   \setlrmargins{*}{*}{1.125}% 1/0.889 major 2nd, 25.6mm | 22.77mm
@@ -219,7 +211,7 @@
 }{
 \ifthenelse{\equal{\ANEC@pagePreset}{smallpage}}{
 
-  % Small page
+  % Small page size
   %
   % 5.25in x 8in page
   % P = 1.523 (~Pentagon (1.539), b/w fifth (1.5) and minor 6th (1.6))
@@ -227,7 +219,6 @@
 
   % For 11pt / 16pt font size, 27 lines, Gentium font, no parskip, 17pt parindent.
   % Small book binding swallows more space in the center, hence the 0.889 L-R margin ratio, instead of the 1.125 of the larger page size.
-
 
   % === normalsize ===
 
@@ -256,7 +247,9 @@
   \settrimmedsize{\stockheight}{\stockwidth}{*}
   \settrims{0pt}{0pt}
   \settypeblocksize{27\baselineskip + \topskip}{*}{0.618}% 1/1.618 Golden section
-  \setlrmargins{*}{*}{0.889}% major 2nd 15:16
+  %\setlrmargins{*}{*}{0.889}% major 2nd 15:16, gives: 19.24mm | 17.1mm
+  % FIXED: inner margin too close to the spine. Increased it a bit.
+  \setlrmargins{*}{*}{0.63}% gives: 22.30mm | 14.04mm
   \setulmargins{*}{*}{1.701}% Tall Pentagon
   \setlength{\footskip}{3\baselineskip}
   \checkandfixthelayout
@@ -481,6 +474,11 @@ philo-sophical munindo amaravati thai-land}
   \raisebox{-0.3\baselineskip}{\rule{0.2pt}{1.2\baselineskip}}%
   \hspace{6pt}%
 }
+\makepagestyle{topbottomcentered}
+\makeevenhead{topbottomcentered}{}{\textit{\rightmark}}{}
+\makeevenfoot{topbottomcentered}{}{\thepage}{}
+\makeoddhead{topbottomcentered}{}{\textit{\leftmark}}{}
+\makeoddfoot{topbottomcentered}{}{\thepage}{}
 
 \makepagestyle{bottomcorner}
 \makeevenhead{bottomcorner}{}{}{}
