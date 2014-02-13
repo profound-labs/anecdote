@@ -1,6 +1,6 @@
 \ProvidesPackage{book-core-first}
 
-\RequirePackage[\ARU@babelLanguage]{babel}
+\RequirePackage[\BOOK@babelLanguage]{babel}
 \RequirePackage{nag}
 \RequirePackage{xparse}
 \RequirePackage{soul}
@@ -53,6 +53,8 @@
 % Renderer = Basic
 % http://tex.stackexchange.com/questions/20580/how-to-enable-ligatures-for-emdash-endash-in-luatex
 
+%% by filename:
+
 %\setmainfont[
 %  Path = {./fonts/},
 %  SmallCapsFont = Crimson-Roman.otf,
@@ -77,13 +79,36 @@
 %\newfontfamily\gentiumFont[
 %  Path = {./fonts/},
 %]{GentiumPlus-R.ttf}
-%
-%% header and footer
-%
+
+%% or by name:
+
+%\setmainfont[
+%  SmallCapsFont = Crimson Roman,
+%  SmallCapsFeatures= { Ligatures = TeX, Letters = SmallCaps },
+%  BoldFont = Gentium Book Basic Bold,
+%]{Gentium}
+
+%\newfontfamily\crimsonRomanFont[
+%  BoldFont = Crimson Semibold,
+%  ItalicFont = Crimson Italic,
+%]{Crimson Roman}
+%\newfontfamily\crimsonRomanFontOldNum[
+%  Numbers = OldStyle,
+%]{Crimson Roman}
+%\newfontfamily\gentiumFont{Gentium}
+
+% header and footer
+
+%% by filename:
+
 %\newfontfamily\footFont[
 %  Path = {./fonts/},
 %  %Renderer = Basic,
 %]{Crimson-Roman.otf}
+
+%% or by name:
+
+%\newfontfamily\footFont[Renderer = Basic]{Shaker Pali}
 
 \newcommand{\footSize}
   {\@setfontsize\footSize{9}{9}}
