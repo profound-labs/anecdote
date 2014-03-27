@@ -77,8 +77,11 @@
 
   % === normalsize ===
 
+  \def\BOOK@apt{11}
+  \def\BOOK@bpt{16}
+
   \renewcommand{\normalsize}{%
-    \@setfontsize\normalsize{11}{16}
+    \@setfontsize\normalsize\BOOK@apt\BOOK@bpt
     \abovedisplayskip 11\p@ \@plus3\p@ \@minus6\p@
     \abovedisplayshortskip \z@ \@plus3\p@
     \belowdisplayshortskip 6.5\p@ \@plus3.5\p@ \@minus3\p@
@@ -123,8 +126,11 @@
 
   % === normalsize ===
 
+  \def\BOOK@apt{11}
+  \def\BOOK@bpt{16}
+
   \renewcommand{\normalsize}{%
-    \@setfontsize\normalsize{11}{16}
+    \@setfontsize\normalsize\BOOK@apt\BOOK@bpt
     \abovedisplayskip 11\p@ \@plus3\p@ \@minus6\p@
     \abovedisplayshortskip \z@ \@plus3\p@
     \belowdisplayshortskip 6.5\p@ \@plus3.5\p@ \@minus3\p@
@@ -179,8 +185,11 @@
 
   % === normalsize ===
 
+  \def\BOOK@apt{10.5}
+  \def\BOOK@bpt{15}
+
   \renewcommand{\normalsize}{%
-    \@setfontsize\normalsize{10.5}{15}
+    \@setfontsize\normalsize\BOOK@apt\BOOK@bpt
     \abovedisplayskip 10\p@ \@plus2\p@ \@minus5\p@
     \abovedisplayshortskip \z@ \@plus3\p@
     \belowdisplayshortskip 6\p@ \@plus3\p@ \@minus3\p@
@@ -229,8 +238,11 @@
 
   % === normalsize ===
 
+  \def\BOOK@apt{10.5}
+  \def\BOOK@bpt{15}
+
   \renewcommand{\normalsize}{%
-    \@setfontsize\normalsize{10.5}{15}
+    \@setfontsize\normalsize\BOOK@apt\BOOK@bpt
     \abovedisplayskip 11\p@ \@plus3\p@ \@minus6\p@
     \abovedisplayshortskip \z@ \@plus3\p@
     \belowdisplayshortskip 6.5\p@ \@plus3.5\p@ \@minus3\p@
@@ -272,8 +284,11 @@
 
   % === normalsize ===
 
+  \def\BOOK@apt{10.5}
+  \def\BOOK@bpt{15}
+
   \renewcommand{\normalsize}{%
-    \@setfontsize\normalsize{10.5}{15}
+    \@setfontsize\normalsize\BOOK@apt\BOOK@bpt
     \abovedisplayskip 10\p@ \@plus2\p@ \@minus5\p@
     \abovedisplayshortskip \z@ \@plus3\p@
     \belowdisplayshortskip 6\p@ \@plus3\p@ \@minus3\p@
@@ -302,14 +317,15 @@
   % textwidth: 110mm
   % 1/1.568181 = 0.63768 ratio
 
+  % TODO: count lines in PDF
   % no parskip, so 32.5 lines
   %   = 487.5pt
   %   = 171.97917mm
   %   = 31.5\baselineskip + \topskip
-  \settypeblocksize{31.5\baselineskip + \topskip}{110mm}{*}
+  \settypeblocksize{32\baselineskip + \topskip}{110mm}{*}
   \setlrmargins{*}{15mm}{*}% 27.4mm | 15mm
   \setulmargins{26mm}{*}{*}
-  \setheadfoot{\baselineskip}{3\baselineskip}
+  \setheadfoot{15pt}{39pt}
   \setheaderspaces{*}{13mm}{*}
   \checkandfixthelayout
 
