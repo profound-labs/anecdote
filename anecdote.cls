@@ -6,7 +6,7 @@
 %
 % http://profound-labs.github.io/projects/anecdote/
 %
-% (c) Gambhiro Bhikkhu, 2013
+% (c) Gambhiro Bhikkhu, 2014
 % gambhiro@ratanagiri.org.uk
 %
 % LPPL LaTeX Pubic Project Licence
@@ -17,7 +17,7 @@
 % ==============
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{anecdote}[2014/03/05 v0.6 A memoir-based documentclass with a contemporary style for books with a lighter content.]
+\ProvidesClass{anecdote}[2014/03/27 v0.7 A memoir-based documentclass with a contemporary style for books with a lighter content.]
 
 % ========================
 % Preliminary Declarations
