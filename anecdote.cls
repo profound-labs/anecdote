@@ -7,7 +7,7 @@
 % http://profound-labs.github.io/projects/anecdote/
 %
 % (c) Gambhiro Bhikkhu, 2014
-% gambhiro@ratanagiri.org.uk
+% gambhiro.bhikkhu.85@gmail.com
 %
 % LPPL LaTeX Pubic Project Licence
 %
@@ -17,7 +17,7 @@
 % ==============
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{anecdote}[2014/03/27 v0.7 A memoir-based documentclass with a contemporary style for books with a lighter content.]
+\ProvidesClass{anecdote}[2014/11/23 v0.8 A memoir-based documentclass with a contemporary style for books with a lighter content.]
 
 % ========================
 % Preliminary Declarations
@@ -69,6 +69,7 @@
 \RequirePackage{titletoc}
 \RequirePackage{enumitem}
 \RequirePackage{tikz}
+\usetikzlibrary{positioning}
 
 % === Define colors ===
 
@@ -91,6 +92,8 @@
 \defaultfontfeatures{Ligatures={TeX}}
 
 % Dummy font commands to use system defaults instead of custom fonts
+
+% TODO: comment these out and define them below as \newfontfamily
 
 \newcommand\crimsonRomanFont{}
 \newcommand\crimsonRomanFontOldNum{}
@@ -216,26 +219,25 @@
 \newcommand{\smaller}
   {\@setfontsize\smaller{9}{11}}
 
+% === microtype ===
+
+\RequirePackage[final,babel=true]{microtype}
+\SetTracking[spacing={500,100,}]{encoding=*, family=chapterTitleFont}{40}
+
 % === hyperref ===
 
 \RequirePackage{hyperref}
+
+% TODO: color the link if this is for the web
+
 \hypersetup{
+  colorlinks=true,
+  linkcolor=textbody,
+  citecolor=textbody,
+  filecolor=textbody,
+  urlcolor=textbody,
   unicode=true,
-  colorlinks=false,
-  linkbordercolor=linkborder,
 }
-
-% Use bordered links, as above. The colored borders will not print, but
-% makes linked words more apparent to people reading the PDF on desktop.
-
-%\hypersetup{
-%  colorlinks=true,
-%  linkcolor=textbody,
-%  citecolor=textbody,
-%  filecolor=textbody,
-%  urlcolor=textbody
-%  unicode=true,
-%}
 
 \RequirePackage[
   open,
@@ -279,6 +281,7 @@
 \hyphenpenalty=700
 \exhyphenpenalty=50
 \doublehyphendemerits=900
+%\finalhyphendemerits=5000 % default is 5000
 \brokenpenalty=990
 
 \RequirePackage[defaultlines=2,all]{nowidow}
@@ -317,7 +320,8 @@ philo-sophical munindo amaravati thai-land}
 
 \sodef\soTocChapter{}{.1em}{.5em plus.1em}{.1em plus.1em minus.1em}
 \sodef\soSection{}{.07em}{.4em plus.1em}{.1em plus.1em minus.1em}
-\sodef\soChapter{}{.06em}{.4em plus.1em}{.1em plus.1em minus.1em}
+% Using \textls letterspacing with microtype instead, because soul swallows accented characters at the end of words.
+%\sodef\soChapter{}{.06em}{.4em plus.1em}{.1em plus.1em minus.1em}
 
 % === Custom commands and environments ===
 
@@ -365,7 +369,7 @@ philo-sophical munindo amaravati thai-land}
   itemindent=0pt,
   leftmargin=15pt,
   rightmargin=0pt,
-  itemsep=2pt,
+  itemsep=4pt,
   topsep=0pt,
   parsep=0pt,
   partopsep=0pt,
@@ -560,7 +564,8 @@ philo-sophical munindo amaravati thai-land}
 }
 {\contentsmargin{0pt}%
 \itshape}
-{\hfill\normalsize\crimsonRomanFont\thecontentspage}
+{\enspace\hfill\normalsize\crimsonRomanFont\thecontentspage}
+[\addvspace{5pt}]
 
 \titlecontents{appendix}[\tocLeftWidth]
 {\normalsize\crimsonRomanFont}%
@@ -728,7 +733,7 @@ philo-sophical munindo amaravati thai-land}
     \raggedright\hspace*{\chapterTitleLeftSkip}%
     \parbox{\linewidth - \chapterTitleLeftSkip}{%
       \raggedright\chaptitlefont\color{chaptertitle}%
-      \MakeUppercase{\soChapter{##1}}%
+      \textls*{\MakeUppercase{##1}}%
       \ifchapterfootnote%
         \hspace*{2pt}\theChapterFootnoteMark%
       \fi%
@@ -785,7 +790,7 @@ philo-sophical munindo amaravati thai-land}
   \renewcommand*\printchaptertitle[1]{%
     \begin{adjustwidth}{\chapindent}{}
       \raggedright%
-      {\chaptitlefont\MakeUppercase{\soChapter{##1}}}%
+      {\chaptitlefont\textls{\MakeUppercase{##1}}}%
       \ifchapterfootnote%
         \hspace*{0.8mm}\theChapterFootnoteMark%
       \fi%
@@ -900,10 +905,47 @@ philo-sophical munindo amaravati thai-land}
   % It won't be exactly 33 lines because of the parskip,
   % but close enough for our purpose.
   \settypeblocksize{32\baselineskip + \topskip}{*}{0.577}% 1/1.732 (sqrt(3)), Hexagon
-  \setlrmargins{*}{*}{1.125}% 1/0.889 major 2nd, 25.6mm | 22.77mm
-  \setulmargins{*}{*}{1.701}% Tall Pentagon, 17.9mm | 30.52mm
+  \setlrmargins{*}{*}{1.125}% 1/0.889 major 2nd
+  \setulmargins{*}{*}{1.701}% Tall Pentagon, 1.701
   \setlength{\footskip}{3\baselineskip}
-  \checkandfixthelayout
+
+% ******************************************************
+% Stock height and width: 228.59732mm by 152.39821mm
+% Top and edge trims: 0mm and 0mm
+% Page height and width: 228.59732mm by 152.39821mm
+% Text height and width: 183.81133mm by 105.78816mm
+% Spine and edge margins: 21.80508mm and 24.53474mm
+% Upper and lower margins: 16.57637mm and 28.20961mm
+% Headheight and headsep: 4.77979mm and 6.98476mm
+% Footskip: 16.86987mm
+% Columnsep and columnseprule: 3.51456mm and 0mm
+% Marginparsep and marginparwidth: 2.46019mm and 19.61436mm
+% Sidecapsep and sidecapwidth: 2.46019mm and 39.01158mm
+% Sidebarhsep and sidebarwidth: 2.46019mm and 39.01158mm
+% Sidebarvsep and sidebartopsep: 4.77979mm and 0mm
+% Sidebarheight: 189.75801mm
+% Sidefoothsep and sidefootwidth: 2.46019mm and 39.01158mm
+% Sidefootvsep and sidefootheight: 4.77979mm and 189.75801mm
+% ******************************************************
+%
+% ******************************************************
+% Stock height and width: 650.43pt by 433.62pt
+% Top and edge trims: 0pt and 0pt
+% Page height and width: 650.43pt by 433.62pt
+% Text height and width: 523pt by 301pt
+% Spine and edge margins: 62.04224pt and 69.80893pt
+% Upper and lower margins: 47.16492pt and 80.26508pt
+% Headheight and headsep: 13.6pt and 19.8738pt
+% Footskip: 48pt
+% Columnsep and columnseprule: 10pt and 0pt
+% Marginparsep and marginparwidth: 7pt and 55.80893pt
+% Sidecapsep and sidecapwidth: 7pt and 111pt
+% Sidebarhsep and sidebarwidth: 7pt and 111pt
+% Sidebarvsep and sidebartopsep: 13.6pt and 0pt
+% Sidebarheight: 539.9202pt
+% Sidefoothsep and sidefootwidth: 7pt and 111pt
+% Sidefootvsep and sidefootheight: 13.6pt and 539.9202pt
+% ******************************************************
 
 }{
 \ifthenelse{\equal{\BOOK@pagePreset}{smallpage}}{
@@ -952,7 +994,6 @@ philo-sophical munindo amaravati thai-land}
   \setlrmargins{*}{*}{0.63}% gives: 22.30mm | 14.04mm
   \setulmargins{*}{*}{1.701}% Tall Pentagon
   \setlength{\footskip}{3\baselineskip}
-  \checkandfixthelayout
 
 }{
 \ifthenelse{\equal{\BOOK@pagePreset}{opuslargepage}}{
@@ -1016,7 +1057,6 @@ philo-sophical munindo amaravati thai-land}
   \setulmargins{*}{*}{1.778}% minor 7th 9:16, 20.23mm | 35.97mm
   \setheaderspaces{*}{4mm}{*}% ~ 1/Golden section, closer to text
   \setlength{\footskip}{3\baselineskip}
-  \checkandfixthelayout
 
 }{
 \ifthenelse{\equal{\BOOK@pagePreset}{opussmallpage}}{
@@ -1062,7 +1102,6 @@ philo-sophical munindo amaravati thai-land}
   \setlrmargins{*}{*}{0.889}% major 2nd 15:16
   \setulmargins{*}{*}{1.701}% Tall Pentagon
   \setlength{\footskip}{3\baselineskip}
-  \checkandfixthelayout
 
 }{
 \ifthenelse{\equal{\BOOK@pagePreset}{largevolume}}{
@@ -1120,13 +1159,18 @@ philo-sophical munindo amaravati thai-land}
   \setulmargins{26mm}{*}{*}
   \setheadfoot{15pt}{39pt}
   \setheaderspaces{*}{13mm}{*}
-  \checkandfixthelayout
 
 }{
 
   % other page sizes?
 
 }}}}}
+
+% This will also typeout values in pt (default)
+\checkandfixthelayout
+% It is useful to see layout values in mm too.
+\settypeoutlayoutunit{mm}
+\typeoutlayout
 
 % alias the pagestyles into semantic names, "where it is used"
 
@@ -1135,8 +1179,6 @@ philo-sophical munindo amaravati thai-land}
 % === Packages to be loaded LAST ===
 
 \RequirePackage[perpage,multiple,stable]{footmisc}
-
-\RequirePackage[final,babel=true]{microtype}
 
 %% =================
 %% PDF/X-3:2002 info
