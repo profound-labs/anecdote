@@ -1172,10 +1172,6 @@ philo-sophical munindo amaravati thai-land}
 \settypeoutlayoutunit{mm}
 \typeoutlayout
 
-% alias the pagestyles into semantic names, "where it is used"
-
-\aliaspagestyle{normalpage}{bottomcorner}
-
 % === Packages to be loaded LAST ===
 
 \RequirePackage[perpage,multiple,stable]{footmisc}
