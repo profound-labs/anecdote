@@ -6,22 +6,28 @@
 %
 % http://profound-labs.github.io/projects/anecdote/
 %
-% (c) Gambhiro Bhikkhu, 2014
+% (c) Gambhiro Bhikkhu, 2016
 % gambhiro.bhikkhu.85@gmail.com
 %
 % LPPL LaTeX Pubic Project Licence
 %
+
+% TODO: document interfaces
+% TODO: test document to compile
 
 % ==============
 % Identification
 % ==============
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{anecdote}[2014/11/23 v0.8 A memoir-based documentclass with a contemporary style for books with a lighter content.]
+\ProvidesClass{anecdote}[2016/01/31 v0.9 A memoir-based documentclass with a contemporary style for books with a lighter content.]
 
 % ========================
 % Preliminary Declarations
 % ========================
+
+\newif\ifwebversion
+\webversionfalse
 
 % =======
 % Options
@@ -36,6 +42,7 @@
   pagePreset/.store in=\BOOK@pagePreset,
   babelLanguage/.default=british,
   babelLanguage/.store in=\BOOK@babelLanguage,
+  webversion/.code=\webversiontrue,
 }
 
 % Pass all unknown options to memoir
@@ -85,6 +92,7 @@
 \definecolor{partname}{gray}{0.5}
 \definecolor{parttitle}{gray}{0.5}
 \definecolor{linkborder}{rgb}{0.4,0.4,1}% light blue
+\definecolor{link}{rgb}{0.2,0.2,1}% not so light blue
 
 % === Load fonts ===
 
@@ -108,6 +116,8 @@
 \newcommand\chapterAuthorFont{}
 \newcommand\chapterNoteFont{}
 \newcommand\sectionFont{}
+\newcommand\tocFont{}
+\newcommand\tocFontOldNum{}
 
 % If -- dashes don't work for your font, try
 % Renderer = Basic
@@ -228,16 +238,28 @@
 
 \RequirePackage{hyperref}
 
-% TODO: color the link if this is for the web
-
+\ifwebversion
+% Web version: colored link text
+\hypersetup{
+  unicode=true,
+  colorlinks=true,
+  linkcolor=link,
+  citecolor=link,
+  filecolor=link,
+  urlcolor=link
+}
+\else
+% Desktop version: link colors to text color, so that it doesn't
+% interfere with printing, but can still test is link targets work.
 \hypersetup{
   colorlinks=true,
+  unicode=true,
   linkcolor=textbody,
   citecolor=textbody,
   filecolor=textbody,
-  urlcolor=textbody,
-  unicode=true,
+  urlcolor=textbody
 }
+\fi
 
 \RequirePackage[
   open,
@@ -249,6 +271,7 @@
 % memoir's more allowing penalties
 \midsloppy
 
+% FIXME: only if babel is english or british
 \renewcommand\britishhyphenmins{{3}{3}}
 
 % The lastparline or the parfillskip solution is overkill in many
@@ -400,11 +423,30 @@ philo-sophical munindo amaravati thai-land}
   \ifthenelse{\equal{#1}{}}{\textit{A:}\space}{\textit{#1:}\space}%
 }
 
+% If class option webVersion is used, show content in a paper sized
+% minipage, empty page otherwise.
+% Redefine \color{webcoverbg} to change page background color.
+\newcommand\webcover[1]{%
+\thispagestyle{empty}\mbox{}
+\ifwebversion
+\AddToShipoutPictureFG*{\put(0,0){%
+\begin{minipage}[b][\paperheight][c]{\paperwidth}%
+#1
+\end{minipage}}}
+\fi
+\clearpage
+}
+
 % === Renewing package macros ===
 
 \addtodef{\mainmatter}{}{%
   \addtocontents{toc}{\addvspace{18pt}}%
   \setcounter{chapter}{0}%
+}
+
+\addtodef{\appendix}{}{%
+  \addtocontents{toc}{\addvspace{18pt}}%
+  \bookmarksetup{startatroot}%
 }
 
 \addtodef{\backmatter}{}{%
@@ -541,7 +583,7 @@ philo-sophical munindo amaravati thai-land}
 
 \titlecontents{part}[\tocLeftWidth]
 {\addvspace{20pt}%
-\normalsize\crimsonRomanFont}%
+\normalsize\tocFont}%
 {%
   \contentsmargin{0pt}%
   \makebox[0pt][r]{%
@@ -549,48 +591,48 @@ philo-sophical munindo amaravati thai-land}
   \hspace*{0.5em}$\cdot$\hspace*{0.5em}}%
 }
 {\contentsmargin{0pt}}
-{\hfill\normalsize\crimsonRomanFont\thecontentspage}
+{\hfill\normalsize\tocFont\thecontentspage}
 [\addvspace{5pt}]
 
 \titlecontents{chapter}[\tocLeftWidth]
-{\normalsize\crimsonRomanFont}%
+{\normalsize\tocFont}%
 {%
   \contentsmargin{0pt}%
   \makebox[0pt][r]{%
     {\color{tocleftside}%
-    \chaptername~{\crimsonRomanFontOldNum\thecontentslabel}}%
+    \chaptername~{\tocFontOldNum\thecontentslabel}}%
     \hspace*{0.5em}$\cdot$\hspace*{0.5em}%
   }%
 }
 {\contentsmargin{0pt}%
 \itshape}
-{\enspace\hfill\normalsize\crimsonRomanFont\thecontentspage}
+{\enspace\hfill\normalsize\tocFont\thecontentspage}
 [\addvspace{5pt}]
 
 \titlecontents{appendix}[\tocLeftWidth]
-{\normalsize\crimsonRomanFont}%
+{\normalsize\tocFont}%
 {%
   \contentsmargin{0pt}%
   \makebox[0pt][r]{%
     {\color{tocleftside}%
-    \appendixname~{\crimsonRomanFontOldNum\thecontentslabel}}%
+    \appendixname~{\tocFontOldNum\thecontentslabel}}%
     \hspace*{0.5em}$\cdot$\hspace*{0.5em}%
   }%
 }
 {\contentsmargin{0pt}%
 \itshape}
-{\hfill\normalsize\crimsonRomanFont\thecontentspage}
+{\hfill\normalsize\tocFont\thecontentspage}
 
 \titlecontents{section}[\tocLeftWidth]
 {\addvspace{-2pt}%
-\small\crimsonRomanFont}
+\small\tocFont}
 {\contentslabel[\thecontentslabel]{\tocLeftWidth}}
 {}
-{\hfill\normalsize\crimsonRomanFont\thecontentspage}
+{\hfill\normalsize\tocFont\thecontentspage}
 
 \titlecontents*{subsection}[\tocLeftWidth]
 {\addvspace{-1pt}%
-\small\crimsonRomanFont}
+\small\tocFont}
 {}
 {}
 {\ --- \thecontentspage}
@@ -1161,10 +1203,54 @@ philo-sophical munindo amaravati thai-land}
   \setheaderspaces{*}{13mm}{*}
 
 }{
+\ifthenelse{\equal{\BOOK@pagePreset}{tallpage}}{
+
+  % Tall Page page size
+  %
+  % 5in x 8.25in page
+  % P = 1.618 (Golden section)
+  % T = 1.568181
+
+  % === normalsize ===
+
+  \def\BOOK@apt{10.5}
+  \def\BOOK@bpt{16}
+
+  \renewcommand{\normalsize}{%
+    \@setfontsize\normalsize\BOOK@apt\BOOK@bpt
+    \abovedisplayskip 10\p@ \@plus2\p@ \@minus5\p@
+    \abovedisplayshortskip \z@ \@plus3\p@
+    \belowdisplayshortskip 6\p@ \@plus3\p@ \@minus3\p@
+    \belowdisplayskip \abovedisplayskip
+    \color{textbody}
+    \let\@listi\@listI}
+  \normalsize
+
+  % === indentations ===
+
+  \setlength{\vgap}{1.5em}
+  \setlength{\vindent}{\vgap}
+  \setlength{\vleftmargin}{2em}
+
+  \setlength{\parskip}{0pt}
+  \setlength{\parindent}{15pt}
+
+  % === setup page layout ===
+
+  \setstocksize{8.25in}{5in}
+  \settrimmedsize{\stockheight}{\stockwidth}{*}
+  \settrims{0pt}{0pt}
+
+  \settypeblocksize{26.5\baselineskip + \topskip}{90mm}{*}
+  \setlrmargins{18mm}{*}{*}
+  \setulmargins{27.5mm}{*}{*}% Keeping top same as with 1.618 ratio
+  %\setlength{\footskip}{3\baselineskip}
+
+}{
 
   % other page sizes?
 
-}}}}}
+}}}}}}
 
 % This will also typeout values in pt (default)
 \checkandfixthelayout
