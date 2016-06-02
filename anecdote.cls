@@ -176,13 +176,6 @@
 
 \newcommand\sectionFont\fontinSansFont
 
-% foreign language wrappers
-
-\newfontfamily\thaiFont{Kinnari}
-
-\newcommand*\thai[1]{{\thaiFont #1}}
-
-
 \newcommand{\sectionSize}
   {\@setfontsize\sectionSize{13}{15}}
 
@@ -193,6 +186,12 @@
 
 \newcommand{\copyrightsize}
   {\@setfontsize\copyrightsize{9}{11}}
+
+% foreign language wrappers
+
+\newfontfamily\thaiFont{Kinnari}
+
+\newcommand*\thai[1]{{\thaiFont #1}}
 
 % === microtype ===
 
@@ -504,6 +503,13 @@ philo-sophical munindo amaravati thai-land}
   \raisebox{-0.3\baselineskip}{\rule{0.2pt}{1.2\baselineskip}}%
   \hspace{6pt}%
 }
+
+\newcommand{\sepdot}{%
+  \hspace*{6pt}%
+  $\cdot$%
+  \hspace*{6pt}%
+}
+
 \makepagestyle{topbottomcentered}
 \makeevenhead{topbottomcentered}{}{\textit{\rightmark}}{}
 \makeevenfoot{topbottomcentered}{}{\thepage}{}
@@ -554,14 +560,14 @@ philo-sophical munindo amaravati thai-land}
 \makepagestyle{topcorner}
 \makeevenhead{topcorner}{%
   \raggedright%
-  \headFont\headSize%
-  \parbox{\paperwidth - \textwidth - \spinemargin - 3pt}{\raggedleft\thepage\sepdot}{\color{header}\leftmark}%
+  \headerFont\headerSize%
+  \parbox{\paperwidth - \textwidth - \spinemargin - 3pt}{\raggedleft\thepage\sepdot}{\color[gray]{0.4}\leftmark}%
 }{}{}
 \makeevenfoot{topcorner}{}{}{}
 \makeoddhead{topcorner}{}{}{%
   \raggedleft%
-  \headFont\headSize%
-  {\color{header}\rightmark}\parbox{\paperwidth - \textwidth - \spinemargin - 3pt}{\raggedright\sepdot\thepage}%
+  \headerFont\headerSize%
+  {\color[gray]{0.4}\rightmark}\parbox{\paperwidth - \textwidth - \spinemargin - 3pt}{\raggedright\sepdot\thepage}%
 }
 \makeoddfoot{topcorner}{}{}{}
 \makerunningwidth{topcorner}{\paperwidth}
