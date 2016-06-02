@@ -551,6 +551,25 @@ philo-sophical munindo amaravati thai-land}
   \thepage%
 }{}
 
+\makepagestyle{topcorner}
+\makeevenhead{topcorner}{%
+  \raggedright%
+  \headFont\headSize%
+  \parbox{\paperwidth - \textwidth - \spinemargin - 3pt}{\raggedleft\thepage\sepdot}{\color{header}\leftmark}%
+}{}{}
+\makeevenfoot{topcorner}{}{}{}
+\makeoddhead{topcorner}{}{}{%
+  \raggedleft%
+  \headFont\headSize%
+  {\color{header}\rightmark}\parbox{\paperwidth - \textwidth - \spinemargin - 3pt}{\raggedright\sepdot\thepage}%
+}
+\makeoddfoot{topcorner}{}{}{}
+\makerunningwidth{topcorner}{\paperwidth}
+\makepsmarks{topcorner}{%
+  \createmark{chapter}{left}{nonumber}{}{}
+  \createmark{section}{right}{nonumber}{}{}
+}
+
 % alias the pagestyles into semantic names, "where it is used"
 
 \aliaspagestyle{normalpage}{altTopBottomCorner}
