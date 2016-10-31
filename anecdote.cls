@@ -1,10 +1,8 @@
 % Anecdote Class
 %
-% A memoir-based documentclass with a contemporary style for books with a lighter content.
+% A memoir-based documentclass
 %
 % https://github.com/profound-labs/anecdote
-%
-% http://profound-labs.github.io/projects/anecdote/
 %
 % (c) Gambhiro Bhikkhu, 2016
 % gambhiro.bhikkhu.85@gmail.com
@@ -12,15 +10,12 @@
 % LPPL LaTeX Pubic Project Licence
 %
 
-% TODO: document interfaces
-% TODO: test document to compile
-
 % ==============
 % Identification
 % ==============
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{anecdote}[2016/05/05 v0.10 A memoir-based documentclass with a contemporary style for books with a lighter content.]
+\ProvidesClass{anecdote}[2016/05/05 v0.10 A memoir-based documentclass.]
 
 % ========================
 % Preliminary Declarations
@@ -38,8 +33,6 @@
 
 \pgfkeys{
   /BOOK/.cd,
-  pagePreset/.default=largepage,% "largepage": 6x9in, "smallpage": 5.25x8in
-  pagePreset/.store in=\BOOK@pagePreset,
   babelLanguage/.default=british,
   babelLanguage/.store in=\BOOK@babelLanguage,
   webversion/.code=\webversiontrue,
@@ -66,7 +59,8 @@
 \RequirePackage{xparse}
 \RequirePackage{soul}
 \RequirePackage{textcomp}
-\RequirePackage[cmyk]{xcolor}
+% Default color model is 'natural' which keeps all colors in their model.
+\RequirePackage{xcolor}
 \RequirePackage{xcoffins}
 \RequirePackage{graphicx}
 % Add your \graphicspath declaration to your local style.
@@ -112,6 +106,14 @@
   BoldItalicFont = Gentium Book Basic Bold Italic,
 ]{Gentium Plus}
 
+\newfontfamily\gentiumFont[
+  SmallCapsFont = Crimson Roman,
+  SmallCapsFeatures= { Ligatures = TeX, Letters = SmallCaps, Scale = 0.8, LetterSpace = 0.2 },
+  ItalicFont = Gentium Plus Italic,
+  BoldFont = Gentium Book Basic Bold,
+  BoldItalicFont = Gentium Book Basic Bold Italic,
+]{Gentium Plus}
+
 \newfontfamily\crimsonRomanFont[
   SmallCapsFeatures= { LetterSpace = 0.2 },
   BoldFont = Crimson Semibold,
@@ -121,8 +123,6 @@
 \newfontfamily\crimsonRomanFontOldNum[
   Numbers = OldStyle,
 ]{Crimson Roman}
-
-\newfontfamily\gentiumFont{Gentium}
 
 \newfontfamily\alegreyaFont{Alegreya}
 
@@ -193,12 +193,18 @@
 
 \newcommand*\thai[1]{{\thaiFont #1}}
 
+% other fonts
+
+\newcommand\questionAnswerFont\fontinSansFont
+
 % === microtype ===
 
 \RequirePackage[final,babel=true]{microtype}
 
-% TODO does this work, even when \chapterTitleFont is a \newcommand, not \newfamily ?
-% or do you have to family=Alegreya Sans Light ?
+% \SetTracking family=x works by name ("Glacial Indifference") or the automatic
+% lookup name ("GlacialIndifference"), but not by \newfontfamily commands
+% (chapterTitleFont)
+
 \SetTracking[spacing={350,100,}]{encoding=*, family=chapterTitleFont}{40}
 
 % === hyperref ===
@@ -235,14 +241,21 @@
 
 % === penalties and hyphenation ===
 
-% memoir's more allowing penalties
+% Start with memoir's more allowing penalties
 \midsloppy
 
 % FIXME: only if babel is english or british
 \renewcommand\britishhyphenmins{{3}{3}}
 
-% there are others
+% Portuguese
+
 %\renewcommand\portuguesehyphenmins{{3}{3}}
+%
+%% Portuguese repeats hyphen
+%% http://tex.stackexchange.com/a/247298/831
+%
+%% generates a hyphen that will repeat on a new line
+%\defineshorthand{"-}{\babelhyphen{repeat}}
 
 % The lastparline or the parfillskip solution is overkill in many
 % places. It is optimal for larger paragraphs, but creates too much
@@ -271,15 +284,17 @@
 % Last line at least 20% of textwidth
 %\parfillskip 0pt plus 0.8\textwidth
 
-\hyphenpenalty=700
-\exhyphenpenalty=50
-\doublehyphendemerits=900
-%\finalhyphendemerits=5000 % default is 5000
+\RequirePackage[defaultlines=2,all]{nowidow}
+
+% Penalties
+
+% Use a bit less hyphenation to avoid many successive hyphens, at the expense of
+% a bit more streching.
+\hyphenpenalty=700% default = 50
 
 % It is more effective to \mbox{...} the words to avoid hyphenation.
-\brokenpenalty=5000 % penalty for page break after a hyphenated line
-
-\RequirePackage[defaultlines=2,all]{nowidow}
+% penalty for page break after a hyphenated line
+\brokenpenalty=5000% default = 100
 
 % === common hyphenation exceptions and corrections ===
 
@@ -404,6 +419,10 @@ philo-sophical munindo amaravati thai-land}
   \ifthenelse{\equal{#1}{}}{\textit{A:}\space}{\textit{#1:}\space}%
 }
 
+\newcommand{\QA}[1]{%
+  {\questionAnswerFont\color[gray]{0.4} #1}\space
+}
+
 % If class option webVersion is used, show content in a paper sized
 % minipage, empty page otherwise.
 % Redefine \color{webcoverbg} to change page background color.
@@ -491,6 +510,13 @@ philo-sophical munindo amaravati thai-land}
 \renewcommand*{\notenumintext}[1]{\textsuperscript{\thinspace [#1]}}
 \renewcommand{\prenoteinnotes}{\par\noindent\hangindent=17pt}
 \renewcommand{\postnoteinnotes}{\par\vspace*{0.5\baselineskip}}
+
+% If using babel, captions names have to be renamed like this
+
+%\addto\captionsportuguese{
+%  \renewcommand{\contentsname}{Índice}
+%  \renewcommand{\bibname}{Referências}
+%}
 
 % === Page styles ===
 
@@ -626,6 +652,14 @@ philo-sophical munindo amaravati thai-land}
     \addcontentsline{toc}{chapternote}{%
     \noexpand\numberline{}#1}%
 }
+
+% Format:
+% \titlecontents{ section }[ left ]
+% { above-code }
+% { numbered-entry-format }
+% { numberless-entry-format }
+% { filler-page-format }
+% [ below-code ]
 
 % the right TOC margin
 \contentsmargin{0pt}
