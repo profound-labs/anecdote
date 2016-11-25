@@ -203,9 +203,9 @@
 
 % \SetTracking family=x works by name ("Glacial Indifference") or the automatic
 % lookup name ("GlacialIndifference"), but not by \newfontfamily commands
-% (chapterTitleFont)
+% (such as \chapterTitleFont)
 
-\SetTracking[spacing={350,100,}]{encoding=*, family=chapterTitleFont}{40}
+\SetTracking[spacing={350,100,}]{encoding=*, family=Crimson Roman}{40}
 
 % === hyperref ===
 
@@ -689,7 +689,7 @@ philo-sophical munindo amaravati thai-land}
   \contentsmargin{0pt}%
   \makebox[0pt][r]{%
     {\color{tocleftside}%
-    {\tocFontOldNum\thecontentslabel}}%
+    \tocFontOldNum\thecontentslabel}%
     \hspace*{0.5em}$\cdot$\hspace*{0.5em}%
   }%
 }
